@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import ImageGallery from '../components/ImageGallery.vue';
+import GalleryView from '../views/GalleryView.vue';
+// import store from '../store'; // your vuex store
 
 const routes = [
   {
@@ -9,17 +10,16 @@ const routes = [
     component: HomeView,
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
+    path: '/gallery',
+    name: 'gallery',
+    component: GalleryView,
+    meta: { requiresAuth: true },
   },
   {
-    path: '/image-gallery',
-    name: 'image-gallery',
-    component: ImageGallery,
+    path: '/gallery/:id',
+    name: 'albums',
+    component: GalleryView,
+    meta: { requiresAuth: true },
   },
 
 ];
@@ -27,6 +27,13 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+// eslint-disable-next-line no-unused-vars, consistent-return
+router.beforeEach((to, from) => {
+  if (to.meta.requiresAuth && !window.isLoggedin) {
+    return { name: 'home' };
+  }
 });
 
 export default router;

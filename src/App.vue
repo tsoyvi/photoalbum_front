@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <SideBar />
     <v-main>
       <router-view/>
     </v-main>
@@ -8,17 +7,26 @@
 </template>
 
 <script>
-import SideBar from './components/SideBar.vue';
+import { mapActions } from 'vuex';
 
 export default {
+
   name: 'App',
   components: {
-    SideBar,
+
   },
 
   data: () => ({
     //
   }),
+  methods: {
+    ...mapActions(['СНЕК_LOGIN']),
+  },
+
+  mounted() {
+    this.СНЕК_LOGIN();
+    window.isLoggedin = 'loading';
+  },
 
 };
 </script>
