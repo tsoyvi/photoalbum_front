@@ -1,10 +1,10 @@
 <template>
-<v-carousel
-    cycle
-    height="100vh"
-    hide-delimiter-background
-    show-arrows="hover"
->
+  <v-carousel
+      cycle
+      height="100vh"
+      hide-delimiter-background
+      show-arrows="hover"
+  >
     <v-carousel-item
         v-for="(imageCarouselItem, index) in imageCarouselList" :key="index"
             :src="imageCarouselItem.url"
@@ -16,15 +16,56 @@
             :class="imageCarouselItem.color"
           >
              {{ imageCarouselItem.text }}
+
+             <div class="d-flex justify-space-between" v-if="USER.length === 0">
+                <v-btn
+                  color="grey-lighten-5"
+                  variant="text"
+                  class="font-weight-regular text-h5 v-btn-bg"
+                  @click="openRegistrationWindow()"
+                >START TO FREE
+                </v-btn>
+                <v-btn
+                  color="grey-lighten-5"
+                  variant="text"
+                  class="font-weight-regular text-h5 v-btn-bg"
+                  @click="openAuthWindow()"
+                >LOG IN
+                </v-btn>
+             </div>
+
+             <div class="d-flex justify-center" v-if="USER.length !== 0">
+                <v-btn
+                  color="grey-lighten-5"
+                  variant="text"
+                  class="font-weight-regular text-h5 v-btn-bg"
+                  :to="'/gallery'"
+                >GET START
+                </v-btn>
+             </div>
+
           </div>
         </div>
 
     </v-carousel-item>
+  </v-carousel>
 
-</v-carousel>
+  <RegistrationBlock
+    ref = "RegistrationBlock"
+  />
+
+  <AuthBlock
+    ref = "AuthBlock"
+  />
+
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
+import RegistrationBlock from './auth/RegistrationBlock.vue';
+import AuthBlock from './auth/AuthBlock.vue';
+
 export default {
   name: 'HomePage',
   data() {
@@ -45,30 +86,36 @@ export default {
           text: 'Keep your memories',
           color: 'text-deep-orange-accent-1',
         },
-        {
-          url: 'https://picsum.photos/800/600?5',
-          text: 'Let your imagination run riot',
-          color: 'text-yellow-accent-1',
-        },
-        {
-          url: 'https://picsum.photos/800/600?62',
-          text: 'Keep your memories',
-          color: 'text-green-accent-1',
-        },
-        {
-          url: 'https://picsum.photos/800/600?100',
-          text: 'Let your imagination run riot',
-          color: 'text-light-blue-lighten-5',
-        },
 
       ],
 
     };
+  },
+  components: {
+    RegistrationBlock,
+    AuthBlock,
+  },
+
+  computed: {
+    ...mapGetters(['USER']),
+  },
+
+  methods: {
+    openRegistrationWindow() {
+      this.$refs.RegistrationBlock.openWindow();
+    },
+
+    openAuthWindow() {
+      this.$refs.AuthBlock.openWindow();
+    },
   },
 
 };
 </script>
 
 <style>
-
+.v-btn-bg {
+  margin-top: 100px;
+  background: rgba(255, 255, 255, 0.1)
+};
 </style>
