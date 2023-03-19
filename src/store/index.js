@@ -1,5 +1,9 @@
 import { createStore } from 'vuex';
 
+import auth from './blocks/auth';
+import images from './blocks/images';
+import errors from './blocks/errors';
+
 export default createStore({
   state: {
   },
@@ -9,6 +13,11 @@ export default createStore({
   },
   actions: {
   },
+
   modules: {
+    images,
+    auth,
+    errors,
   },
+
 });
