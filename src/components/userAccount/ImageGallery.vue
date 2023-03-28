@@ -1,15 +1,14 @@
 <template>
-<div v-if="album.id">
+<div v-if="selectedAlbum">
   <VCard class="mx-5 my-2 pa-3">
-    <span class="text-h5">Альбом: {{album.title}}</span>
-
+    <span class="text-h5">Альбом: {{selectedAlbum.title}}</span>
   </VCard>
 
   <VCard class="mx-5 my-2 pa-3">
     <v-row>
-        <div class="text-h5 pa-3" v-if="!images.length">Папка пуста</div>
+        <div class="text-h5 pa-3" v-if="!imagesInAlbumItems.length">Папка пуста</div>
         <v-col
-          v-for="(image, index) in images"
+          v-for="(image, index) in imagesInAlbumItems"
           :key="index"
           cols="6"
           sm="4"
@@ -56,6 +55,7 @@
         </v-col>
       </v-row>
   </VCard>
+
 </div>
 
 <div v-else>
@@ -65,8 +65,9 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 // Components
-import PageNotFound from './PageNotFound.vue';
+import PageNotFound from '../PageNotFound.vue';
 
 export default {
   name: 'ImageGallery',
@@ -74,26 +75,30 @@ export default {
     PageNotFound,
   },
 
-  props: {
-    images: {
-      type: Array,
-      default: null,
+  computed: {
+    ...mapGetters(['images', 'albums']),
+
+    selectedAlbumId() {
+      if (!this.$route.params.id) {
+        return null;
+      }
+      return parseInt(this.$route.params.id, 10);
     },
 
-    album: {
-      type: Object,
-      default() {
-        return {
-          id: null,
-          url: null,
-          title: '-',
-        };
-      },
-
+    imagesInAlbumItems() {
+      if (this.selectedAlbumId) {
+        return this.images.filter((x) => x.albumId === this.selectedAlbumId);
+      }
+      return this.albums;
     },
 
-    openViewImageWindow: {
-      type: Function,
+    selectedAlbum() {
+      if (this.selectedAlbumId) {
+        // return this.albums.filter((item,  i, ar) => ar.item.id === this.albumId);
+        const index = this.albums.findIndex((x) => x.id === this.selectedAlbumId);
+        return this.albums[index];
+      }
+      return null;
     },
 
   },

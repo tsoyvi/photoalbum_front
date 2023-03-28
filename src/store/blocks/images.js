@@ -32,7 +32,7 @@ export default ({
         id: 1,
         url: 'https://picsum.photos/500/300?image=5',
         description: 'ноут',
-        title: 'Природа',
+        title: 'Ноут',
         date: '15.06.2020',
         albumId: 1,
       },

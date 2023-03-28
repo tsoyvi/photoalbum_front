@@ -20,11 +20,12 @@ export default {
     //
   }),
   methods: {
-    ...mapActions(['СНЕК_LOGIN']),
+    ...mapActions(['СНЕК_LOGIN', 'GET_USER_PROFILE']),
   },
 
   mounted() {
     this.СНЕК_LOGIN();
+    // this.GET_USER_PROFILE();
     window.isLoggedin = 'loading';
   },
 

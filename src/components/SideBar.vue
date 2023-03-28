@@ -4,8 +4,8 @@
       >
         <v-list >
           <v-list-item
-            prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-            :title="USER.name"
+            :prepend-avatar="USER.image"
+            :title="USER.title"
             :subtitle="USER.email"
           ></v-list-item>
 
@@ -23,7 +23,7 @@
           ></v-list-item>
 
           <v-list-item prepend-icon="mdi-image" title="My Gallery" value="myGallery"
-            :to="'/gallery'">
+            :to="'/user-account/'+USER.id+'/albums'">
           </v-list-item>
 
           <v-divider></v-divider>
@@ -43,7 +43,7 @@
                   :title="album.title"
                   :prepend-icon="'mdi-folder-open'"
                   :value="album.title"
-                  :to="'/gallery/'+album.id"
+                  :to="'/user-account/'+USER.id+'/albums/'+album.id"
                 ></v-list-item>
 
               </v-list-group>
@@ -51,9 +51,15 @@
               <v-list-item prepend-icon="mdi-account-multiple" title="Shared with me" value="shared"></v-list-item>
             </v-list>
 
+          <v-divider></v-divider>
+
+          <v-list-item prepend-icon="mdi-account-edit-outline" title="My Account" value="myAccount"
+            :to="'/user-account/'+USER.id+'/account'">
+          </v-list-item>
+
       </v-navigation-drawer>
 </template>
-{{modelValue}}
+
 <script>
 import { mapGetters, mapActions } from 'vuex';
 

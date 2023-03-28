@@ -1,6 +1,6 @@
 import { createStore } from 'vuex';
 
-import auth from './blocks/auth';
+import auth from './blocks/user';
 import images from './blocks/images';
 import errors from './blocks/errors';
 

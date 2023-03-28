@@ -3,7 +3,9 @@
     :albums = "albums"
     ref="SideBar"
   />
+  <router-view></router-view>
 
+<!--
   <AlbumGallery
     v-if="!selectedAlbumId"
     :albums = "imagesInAlbumItems"
@@ -15,7 +17,7 @@
     :album = "selectedAlbum"
     :openViewImageWindow = "openViewImageWindow"
   />
-
+-->
   <ModalWindow
     ref="ModalWindow"
   />
@@ -26,16 +28,16 @@
 import { mapActions, mapGetters } from 'vuex';
 
 // Components
-import ImageGallery from '../components/ImageGallery.vue';
-import AlbumGallery from '../components/AlbumGallery.vue';
+// import ImageGallery from '../components/ImageGallery.vue';
+// import AlbumGallery from '../components/userAccount/AlbumGallery.vue';
 import SideBar from '../components/SideBar.vue';
 import ModalWindow from '../components/ModalWindow.vue';
 
 export default {
   name: 'GalleryPage',
   components: {
-    ImageGallery,
-    AlbumGallery,
+    // ImageGallery,
+    // AlbumGallery,
     SideBar,
     ModalWindow,
   },
@@ -92,7 +94,7 @@ export default {
     /**
      * Загрузка картинок
      * / */
-    this.GET_IMAGES(); //
+    // this.GET_IMAGES(); //
   },
 };
 </script>
