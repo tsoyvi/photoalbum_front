@@ -47,7 +47,6 @@
                 <v-checkbox
                   label="Remember Me"
                   color="primary"
-                  value="Remember Me"
                   hide-details
                   v-model="userData.remember"
                 ></v-checkbox>
@@ -88,7 +87,7 @@ export default {
     userData: {
       email: 'test@inddcd.tu',
       password: 'Test12345678',
-      remember: null,
+      remember: false,
     },
   }),
 
