@@ -95,7 +95,6 @@
       </v-card>
     </v-dialog>
   </v-row>
-  {{userData}}
 </template>
 
 <script>

@@ -23,7 +23,7 @@
           ></v-list-item>
 
           <v-list-item prepend-icon="mdi-image" title="My Gallery" value="myGallery"
-            :to="'/user-account/'+USER.id+'/albums'">
+            :to="'/account/albums'">
           </v-list-item>
 
           <v-divider></v-divider>
@@ -43,7 +43,7 @@
                   :title="album.title"
                   :prepend-icon="'mdi-folder-open'"
                   :value="album.title"
-                  :to="'/user-account/'+USER.id+'/albums/'+album.id"
+                  :to="'/account/albums/'+album.id"
                 ></v-list-item>
 
               </v-list-group>
@@ -54,7 +54,7 @@
           <v-divider></v-divider>
 
           <v-list-item prepend-icon="mdi-account-edit-outline" title="My Account" value="myAccount"
-            :to="'/user-account/'+USER.id+'/account'">
+            :to="'/account/account'">
           </v-list-item>
 
       </v-navigation-drawer>

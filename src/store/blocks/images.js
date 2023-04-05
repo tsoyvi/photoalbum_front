@@ -2,31 +2,6 @@ import requests from './requests';
 
 export default ({
   state: {
-    albums: [
-      {
-        id: 1,
-        url: 'https://picsum.photos/500/300?image=2',
-        title: 'Техника',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore',
-        date: '12.12.2023',
-      },
-      {
-        id: 2,
-        url: 'https://picsum.photos/500/300?image=25',
-        title: 'Природа',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, consequat.',
-        date: '12.10.2020',
-      },
-      {
-        id: 3,
-        url: 'https://picsum.photos/500/300?image=27',
-        title: 'Природа minim veniam, quis nostrudp ex ea commodo',
-        description: 'Lorem ipsum t labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrudp ex ea commodo consequat.',
-        date: '12.12.2023',
-      },
-
-    ],
-
     images: [
       {
         id: 1,
@@ -315,9 +290,6 @@ export default ({
   },
 
   getters: {
-    albums(state) {
-      return state.albums;
-    },
     images(state) {
       return state.images;
     },

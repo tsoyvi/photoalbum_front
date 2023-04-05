@@ -1,4 +1,4 @@
-import axios from 'axios';
+// import axios from 'axios';
 import requests from './requests';
 import router from '../../router';
 
@@ -88,7 +88,8 @@ export default ({
     },
 
     async LOGOUT({ commit }) {
-      const result = await axios.post('/api/logout');
+      const result = await requests.postJson('/api/logout');
+
       if (result) {
         commit('LOGOUT'); // Разлогиниваем пользователя
         router.push('/');
@@ -147,22 +148,6 @@ export default ({
       this.dispatch('addError', result.error);
       return false;
     },
-
-    /*
-        async submitUserFile({ commit }, userData) {
-          commit('UPLOAD_FILE');
-
-          const result = await requests.uploadFile(userData.url, userData.formData);
-          if (result.success === true) {
-            commit('UPLOADED_FILE');
-            this.dispatch('checkLogin');
-            return true;
-          }
-          commit('UPLOADED_FILE');
-          this.dispatch('addError', result.error);
-          return false;
-        },
-    */
 
   },
 

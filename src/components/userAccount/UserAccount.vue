@@ -106,7 +106,7 @@ export default {
         },
         description: (value) => value.length <= 16383 || 'Max 16383 characters',
       },
-      loading: null, // "loading2"
+      loading: null,
     };
   },
 
@@ -128,7 +128,7 @@ export default {
           formData.append(key, this.USER[key]);
         } else {
           // this.file = this.$refs.file.files[0];
-          console.log(vm);
+          // console.log(vm);
           formData.append('image', vm);
         }
       });

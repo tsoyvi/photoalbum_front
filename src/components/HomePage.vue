@@ -39,7 +39,7 @@
                   color="grey-lighten-5"
                   variant="text"
                   class="font-weight-regular text-h5 v-btn-bg"
-                  :to="'/user-account/'+USER.id"
+                  :to="'/account/albums'"
                 >GET START
                 </v-btn>
              </div>

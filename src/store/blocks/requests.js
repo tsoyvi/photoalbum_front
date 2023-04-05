@@ -10,7 +10,7 @@ export default {
      */
   async uploadFile(url, formData) {
     try {
-      const { data } = await axios.post(
+      const result = await axios.post(
         url,
         formData,
         {
@@ -24,10 +24,10 @@ export default {
         },
       );
       // console.log(data);
-      if (data.success === true) {
+      if (result) {
         return { success: true };
       }
-      return { success: false, error: data.message };
+      return { success: false, result };
       //
     } catch (error) {
       console.log(error);
@@ -43,8 +43,10 @@ export default {
           password: process.env.VUE_APP_SERVER_APP_PASS,
         },
       });
+
       // console.log(result);
-      if (result.data) {
+
+      if (result) {
         return { success: true, data: result.data };
       }
       return { success: false, error: result.message };
@@ -66,7 +68,7 @@ export default {
           },
         },
       );
-
+      console.log(result);
       if (result) {
         return { success: true, data: result.data };
       }
@@ -107,12 +109,12 @@ export default {
 
   async deleteJson(url, pData) {
     try {
-      const { data } = await axios.delete(url, pData);
+      const result = await axios.delete(url, pData);
 
-      if (data.success === true) {
-        return { success: true, data };
+      if (result) {
+        return { success: true, result };
       }
-      return { success: false, error: data.message };
+      return { success: false, error: result.data.message };
     } catch (error) {
       console.log(error);
       return { success: false, error };

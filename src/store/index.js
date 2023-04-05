@@ -2,6 +2,7 @@ import { createStore } from 'vuex';
 
 import auth from './blocks/user';
 import images from './blocks/images';
+import albums from './blocks/albums';
 import errors from './blocks/errors';
 
 export default createStore({
@@ -16,6 +17,7 @@ export default createStore({
 
   modules: {
     images,
+    albums,
     auth,
     errors,
   },
