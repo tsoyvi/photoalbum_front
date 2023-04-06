@@ -28,7 +28,7 @@
 
                   <v-img
                     class="image-album stackone0"
-                    :src="album.image"
+                    :src="`/api/v1/albums/${album.id}/s3cover`"
                     height="225px"
                     cover
                   >
