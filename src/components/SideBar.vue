@@ -4,7 +4,7 @@
       >
         <v-list >
           <v-list-item
-            :prepend-avatar="USER.image"
+            :prepend-avatar="`/api/v1/profile/s3avatar/`"
             :title="USER.title"
             :subtitle="USER.email"
           ></v-list-item>

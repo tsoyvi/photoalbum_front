@@ -104,24 +104,24 @@ export default ({
       // console.log(result);
       if (result.success) {
         commit('USER_PROFILE', result.data);
-        this.dispatch('GET_USER_AVATAR');
+        // this.dispatch('GET_USER_AVATAR');
         return true;
       }
       this.dispatch('addError', result.error);
       return false;
     },
-
-    async GET_USER_AVATAR({ commit }) {
-      const result = await requests.getImg('/api/v1/profile/s3avatar/');
-      // console.log(result.data);
-      if (result.success) {
-        commit('USER_PROFILE', { image: result.data });
-        return true;
-      }
-      this.dispatch('addError', result.error);
-      return false;
-    },
-
+    /*
+        async GET_USER_AVATAR({ commit }) {
+          const result = await requests.getImg('/api/v1/profile/s3avatar/');
+          // console.log(result.data);
+          if (result.success) {
+            commit('USER_PROFILE', { image: result.data });
+            return true;
+          }
+          this.dispatch('addError', result.error);
+          return false;
+        },
+    */
     async UPDATE_USER_PROFILE({ commit }, user) {
       // const result = await requests.patchJson('/api/v1/profile', user);
       const result = await requests.uploadFile('/api/v1/profile', user);

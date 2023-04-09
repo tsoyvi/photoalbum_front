@@ -11,8 +11,9 @@
         <v-row
           class="fill-height"
         >
-          <template v-for="(album, index) in albums" :key="index">
-            <v-col
+          <template v-for="(album) in albums" :key="album.id">
+
+           <v-col
               cols="6"
               sm="4"
               md="3"
@@ -25,10 +26,9 @@
                   v-bind="props"
                 >
                 <div class="stackone">
-
-                  <v-img
+                  <v-img v-if="album.image"
                     class="image-album stackone0"
-                    :src="`/api/v1/albums/${album.id}/s3cover`"
+                    :src="album.image"
                     height="225px"
                     cover
                   >
@@ -58,6 +58,29 @@
                         @click="handlerButton({ action: icon.action, album })"
                       ></v-btn>
                     </div>
+                    <template v-slot:placeholder>
+                    <v-row
+                      class="fill-height ma-0"
+                      align="center"
+                      justify="center"
+                    >
+                      <v-progress-circular
+                        indeterminate
+                        color="grey-lighten-5"
+                      ></v-progress-circular>
+                    </v-row>
+                  </template>
+                  </v-img>
+                  <v-img v-else
+                    class="image-album stackone0"
+                    height="225px"
+                    cover
+                  >
+                    <v-card-title class="text-h6 text-white d-flex flex-column">
+                    <p class="mt-4" :class="{ 'show-btns': isHovering }">
+                      {{ album.title }}
+                    </p>
+                    </v-card-title>
                   </v-img>
 
                   <v-img class="stackone1"
@@ -88,6 +111,10 @@
     ref = "AddAlbumGallery"
   />
 
+  <UpdateAlbumGallery
+    ref = "UpdateAlbumGallery"
+  />
+
 </template>
 
 <script>
@@ -95,6 +122,7 @@ import { mapActions, mapGetters } from 'vuex';
 
 import ButtonAddFluid from '../ButtonAddFluid.vue';
 import AddAlbumGallery from './AddAlbumGallery.vue';
+import UpdateAlbumGallery from './UpdateAlbumGallery.vue';
 
 export default {
   name: 'AlbumGallery',
@@ -102,6 +130,7 @@ export default {
   components: {
     ButtonAddFluid,
     AddAlbumGallery,
+    UpdateAlbumGallery,
   },
 
   props: {
@@ -125,7 +154,7 @@ export default {
     icons: [
       {
         icon: 'mdi-information',
-        action: null,
+        action: 'updateAlbum',
       },
       {
         icon: 'mdi-folder-download-outline',
@@ -141,6 +170,7 @@ export default {
 
   computed: {
     ...mapGetters(['USER', 'albums']),
+
   },
 
   methods: {
@@ -150,6 +180,10 @@ export default {
       this.$refs.AddAlbumGallery.openWindow();
     },
 
+    updateAlbum(album) {
+      this.$refs.UpdateAlbumGallery.openWindow(album);
+    },
+
     deleteAlbum(album) {
       if (window.confirm('Удалить альбом?')) {
         this.DELETE_ALBUMS(album);
@@ -157,9 +191,21 @@ export default {
     },
 
     handlerButton({ action, album }) {
+      if (action === 'updateAlbum') {
+        this.updateAlbum(album);
+      }
       if (action === 'deleteAlbum') {
         this.deleteAlbum(album);
       }
+    },
+
+    test() {
+      this.reloadImg();
+    },
+
+    test2() {
+      // this.$forceUpdate();
+      this.albums[0].image = `/api/v1/albums/${this.albums[0].id}/s3cover`;
     },
 
   },
