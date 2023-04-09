@@ -4,6 +4,10 @@
     <span class="text-h5">Альбом: {{selectedAlbum.title}}</span>
   </VCard>
 
+  <ButtonAddFluid
+    @click="addImage()"
+  />
+
   <VCard class="mx-5 my-2 pa-3">
     <v-row>
         <div class="text-h5 pa-3" v-if="!imagesInAlbumItems.length">Папка пуста</div>
@@ -62,17 +66,25 @@
   <PageNotFound />
 </div>
 
+<AddImageAlbum
+  ref = "AddImageAlbum"
+/>
+
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 // Components
 import PageNotFound from '../PageNotFound.vue';
+import ButtonAddFluid from '../ButtonAddFluid.vue';
+import AddImageAlbum from './AddImageAlbum.vue';
 
 export default {
   name: 'ImageGallery',
   components: {
     PageNotFound,
+    ButtonAddFluid,
+    AddImageAlbum,
   },
 
   computed: {
@@ -100,7 +112,14 @@ export default {
       }
       return null;
     },
+  },
 
+  methods: {
+    addImage() {
+      // console.log(this.selectedAlbumId);
+      // const idAlbum = JSON.parse(JSON.stringify(this.selectedAlbumId));
+      this.$refs.AddImageAlbum.openWindow(this.selectedAlbumId);
+    },
   },
 
 };

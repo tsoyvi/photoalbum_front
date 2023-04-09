@@ -25,7 +25,10 @@
                   :class="{ 'on-hover': isHovering }"
                   v-bind="props"
                 >
-                <div class="stackone">
+                <div class="stackone"
+                  @click="$router.push(`/account/albums/${album.id}`)"
+                  @keydown="bar"
+                >
                   <v-img v-if="album.image"
                     class="image-album stackone0"
                     :src="album.image"
@@ -53,9 +56,8 @@
                         :key="index"
                         variant="tonal"
                         :class="{ 'show-btns': isHovering }"
-                        :color="transparent"
                         :icon="icon.icon"
-                        @click="handlerButton({ action: icon.action, album })"
+                        @click.stop="handlerButton({ action: icon.action, album })"
                       ></v-btn>
                     </div>
                     <template v-slot:placeholder>
@@ -165,7 +167,7 @@ export default {
         action: 'deleteAlbum',
       },
     ],
-    transparent: 'rgba(255, 255, 255, 0)',
+
   }),
 
   computed: {
@@ -197,15 +199,6 @@ export default {
       if (action === 'deleteAlbum') {
         this.deleteAlbum(album);
       }
-    },
-
-    test() {
-      this.reloadImg();
-    },
-
-    test2() {
-      // this.$forceUpdate();
-      this.albums[0].image = `/api/v1/albums/${this.albums[0].id}/s3cover`;
     },
 
   },
@@ -245,6 +238,7 @@ export default {
   box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
   margin-bottom: 10px;
   margin-top: 10px;
+  cursor: pointer;
 }
 
 /*СТОПКА*/

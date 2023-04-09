@@ -72,7 +72,7 @@ export default ({
     async CREATE_ALBUM({ commit }, album) {
       const result = await requests.uploadFile('/api/v1/albums', album);
       if (result.success === true) {
-        console.log(result.data);
+        // console.log(result.data);
         commit('ADD_ALBUM', result.data);
         this.dispatch('GET_ALBUMS');
         return true;

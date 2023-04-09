@@ -305,6 +305,19 @@ export default ({
 
   actions: {
 
+    async CREATE_IMAGE({ commit }, image) {
+      const result = await requests.uploadFile('/api/v1/posts', image);
+      if (result.success === true) {
+        console.log(result.data);
+        commit('ADD_IMAGE', result.data);
+        // this.dispatch('GET_ALBUMS');
+        return true;
+      }
+
+      this.dispatch('addError', result.error);
+      return false;
+    },
+
     async GET_IMAGES({ commit }) {
       const result = await requests.getJson('api/images');
       if (result.success === true) {
