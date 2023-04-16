@@ -58,6 +58,9 @@
     ref = "AuthBlock"
   />
 
+  <ForgotPasswordBlock
+    ref = "ForgotPasswordBlock"
+  />
 </template>
 
 <script>
@@ -65,6 +68,7 @@ import { mapGetters } from 'vuex';
 
 import RegistrationBlock from './auth/RegistrationBlock.vue';
 import AuthBlock from './auth/AuthBlock.vue';
+import ForgotPasswordBlock from './auth/ForgotPasswordBlock.vue';
 
 export default {
   name: 'HomePage',
@@ -94,6 +98,7 @@ export default {
   components: {
     RegistrationBlock,
     AuthBlock,
+    ForgotPasswordBlock,
   },
 
   computed: {
@@ -107,6 +112,10 @@ export default {
 
     openAuthWindow() {
       this.$refs.AuthBlock.openWindow();
+    },
+
+    openForgotPasswordWindow() {
+      this.$refs.ForgotPasswordBlock.openWindow();
     },
   },
 
