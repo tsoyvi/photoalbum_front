@@ -60,7 +60,7 @@
                 >LOGIN</v-btn>
 
                 <v-btn color="primary" variant="plain" class="mx-5"
-                @click="check_login()"
+                @click="openForgotPasswordWindow()"
                 >Forgot Your Password?</v-btn>
 <!--
                 <v-btn color="primary" variant="plain" class="mx-5"
@@ -114,6 +114,11 @@ export default {
 
     logout() {
       this.LOGOUT();
+    },
+
+    openForgotPasswordWindow() {
+      this.$parent.openForgotPasswordWindow();
+      this.closeWindow();
     },
   },
 
