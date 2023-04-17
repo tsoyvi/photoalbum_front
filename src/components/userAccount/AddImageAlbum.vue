@@ -89,7 +89,7 @@ export default {
       album_id: null,
       title: '',
       description: '',
-      images: '',
+      image: '',
     },
     loading: null,
   }),
@@ -119,17 +119,13 @@ export default {
 
       const imageKeys = Object.keys(this.image);
 
-      const vm = [];
-      vm.push(this.$refs.imageFile.files[0]);
-
-      console.log(vm);
-      console.log(typeof vm);
+      const vm = this.$refs.imageFile.files[0];
 
       imageKeys.forEach((key) => {
-        if (key !== 'images') {
+        if (key !== 'image') {
           formData.append(key, this.image[key]);
         } else {
-          formData.append('images', vm);
+          formData.append('image', vm);
         }
       });
 

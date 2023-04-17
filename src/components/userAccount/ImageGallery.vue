@@ -10,54 +10,71 @@
 
   <VCard class="mx-5 my-2 pa-3">
     <v-row>
-        <div class="text-h5 pa-3" v-if="!imagesInAlbumItems.length">Папка пуста</div>
+      <div class="text-h5 pa-3" v-if="!imagesInAlbumItems.length">Папка пуста</div>
+
+      <template v-for="(image, index) in imagesInAlbumItems" :key="index">
+
+     <v-hover v-slot:default="{ isHovering, props }">
         <v-col
-          v-for="(image, index) in imagesInAlbumItems"
-          :key="index"
-          cols="6"
-          sm="4"
-          md="3"
-          lg="2"
-        >
-          <v-hover
-            v-slot="{ isHovering, props }"
-            open-delay="50"
+          v-if="colSize(index) !== 12 && colSize(index) !== 0"
+          :cols="colSize(index)" class="px-2"
+          v-bind="props"
           >
-            <VCard
-              :elevation ="isHovering ? 12 :2"
-              :class="{ 'on-hover': isHovering }"
-              v-bind="props"
-              @click="openViewImageWindow(image)"
-            >
-            <template v-slot:title>
-              {{image.title}}
+          <v-img
+            @click="$router.push(`/account/albums/`)"
+            :class="{ 'on-hover': isHovering }"
+            :src="`/api/v1/posts/${image.id}/s3small`"
+            :lazy-src="`https://picsum.photos/500/300?image=${image.id}`"
+            cover
+            height="100%"
+          >
+          <div class="icon-image d-flex justify-space-between align-end mx-5 mt-n3">
+            <v-btn
+              v-for="(icon, index) in icons"
+              :key="index"
+              variant="tonal"
+              size="x-small"
+              :class="{ 'show-btns': isHovering }"
+              :icon="icon.icon"
+              @click.stop="handlerButton({ action: icon.action, album })"
+            ></v-btn>
+          </div>
+
+            <template v-slot:placeholder>
+              <v-row
+                class="fill-height ma-0"
+                align="center"
+                justify="center"
+              >
+                <v-progress-circular
+                  indeterminate
+                  color="grey-lighten-5"
+                ></v-progress-circular>
+              </v-row>
             </template>
-                <v-img
-                  :src="image.url"
-                  :lazy-src="image.url"
-                  aspect-ratio="1"
-                  cover
-                >
-                  <template v-slot:placeholder>
-                    <v-row
-                      class="fill-height ma-0"
-                      align="center"
-                      justify="center"
-                    >
-                      <v-progress-circular
-                        indeterminate
-                        color="grey-lighten-5"
-                      ></v-progress-circular>
-                    </v-row>
-                  </template>
-                </v-img>
-                <v-card-text class="ts-card-text-margin">
-                  <div class="">{{image.date}}</div>
-                </v-card-text>
-              </VCard>
-          </v-hover>
+          </v-img>
         </v-col>
-      </v-row>
+
+        <v-col v-if="colSize(index) === 12" cols="4" class="d-flex flex-column">
+          <v-row height="50%">
+            <v-col v-for="(subImageIndex, subIndex) in 2" :key="subIndex" cols="12"
+              class="px-2">
+              <v-img
+                :src="`/api/v1/posts/${image.id}/s3small`"
+                :lazy-src="`https://picsum.photos/500/300?image=${ subIndex}`"
+                cover
+                height="100%"
+              >
+              </v-img>
+            </v-col>
+          </v-row>
+        </v-col>
+
+      </v-hover>
+
+      </template>
+    </v-row>
+
   </VCard>
 
 </div>
@@ -65,15 +82,14 @@
 <div v-else>
   <PageNotFound />
 </div>
-
 <AddImageAlbum
   ref = "AddImageAlbum"
 />
-
+<v-btn @click="this.GET_IMAGES()"> teset </v-btn>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 // Components
 import PageNotFound from '../PageNotFound.vue';
 import ButtonAddFluid from '../ButtonAddFluid.vue';
@@ -87,8 +103,28 @@ export default {
     AddImageAlbum,
   },
 
+  data: () => ({
+    icons: [
+      {
+        icon: 'mdi-check',
+        action: 'updateImage',
+        title: 'Выделить',
+      },
+      {
+        icon: 'mdi-download',
+        action: null,
+        title: 'Скачать картинку',
+      },
+      {
+        icon: 'mdi-link-variant',
+        action: 'null',
+        title: 'Поделиться',
+      },
+    ],
+  }),
+
   computed: {
-    ...mapGetters(['images', 'albums']),
+    ...mapGetters(['IMAGES', 'albums']),
 
     selectedAlbumId() {
       if (!this.$route.params.id) {
@@ -99,7 +135,7 @@ export default {
 
     imagesInAlbumItems() {
       if (this.selectedAlbumId) {
-        return this.images.filter((x) => x.albumId === this.selectedAlbumId);
+        return this.IMAGES.filter((x) => x.album_id === this.selectedAlbumId);
       }
       return this.albums;
     },
@@ -115,11 +151,34 @@ export default {
   },
 
   methods: {
+    ...mapActions(['GET_IMAGES']),
+
     addImage() {
       // console.log(this.selectedAlbumId);
       // const idAlbum = JSON.parse(JSON.stringify(this.selectedAlbumId));
       this.$refs.AddImageAlbum.openWindow(this.selectedAlbumId);
     },
+
+    colSize(index) {
+      const colSizeArray = [
+        2, 2, 4, 2, 2,
+        4, 2, 2, 4,
+        5, 3, 4,
+        4, 2, 4, 2,
+        2, 4, 4, 2,
+        // 12, 0, 8,
+      ];
+
+      let count = index;
+      while (count > colSizeArray.length - 1) {
+        count -= colSizeArray.length;
+      }
+      // console.log(count);
+      return colSizeArray[count];
+    },
+  },
+  mounted() {
+    this.GET_IMAGES();
   },
 
 };
@@ -130,4 +189,17 @@ export default {
   margin-top: -10px;
   margin-bottom: -10px;
 }
+.show-btns {
+  color: rgb(255, 251, 251) !important;
+  background:rgb(0, 0, 0, 0.8);
+}
+.icon-image {
+  font-size: 8pt;
+  height: 100%;
+  color: rgba(255, 255, 255, 0) !important;
+}
+.on-hover {
+  opacity: 0.85;
+}
+
 </style>
