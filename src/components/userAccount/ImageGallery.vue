@@ -36,7 +36,7 @@
               size="x-small"
               :class="{ 'show-btns': isHovering }"
               :icon="icon.icon"
-              @click.stop="handlerButton({ action: icon.action, album })"
+              @click.stop="handlerButton({ action: icon.action, image})"
             ></v-btn>
           </div>
 
@@ -61,7 +61,7 @@
               class="px-2">
               <v-img
                 :src="`/api/v1/posts/${image.id}/s3small`"
-                :lazy-src="`https://picsum.photos/500/300?image=${ subIndex}`"
+                :lazy-src="`https://picsum.photos/500/300?image=${ subIndex }`"
                 cover
                 height="100%"
               >
@@ -112,7 +112,7 @@ export default {
       },
       {
         icon: 'mdi-download',
-        action: null,
+        action: 'downloadImage',
         title: 'Скачать картинку',
       },
       {
@@ -151,7 +151,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['GET_IMAGES']),
+    ...mapActions(['GET_IMAGES', 'DOWNLOAD_IMAGE']),
 
     addImage() {
       // console.log(this.selectedAlbumId);
@@ -176,7 +176,19 @@ export default {
       // console.log(count);
       return colSizeArray[count];
     },
+
+    handlerButton({ action, image }) {
+      if (action === 'downloadImage') {
+        this.downloadImage(image);
+      }
+    },
+
+    downloadImage(image) {
+      this.DOWNLOAD_IMAGE(image);
+    },
+
   },
+
   mounted() {
     this.GET_IMAGES();
   },

@@ -1,3 +1,5 @@
+import axios from 'axios';
+import FileDownload from 'js-file-download';
 import requests from './requests';
 
 export default ({
@@ -45,6 +47,16 @@ export default ({
 
       this.dispatch('addError', result.error);
       return false;
+    },
+
+    async DOWNLOAD_IMAGE(nul, image) {
+      axios({
+        url: `/api/v1/posts/${image.id}/s3large`,
+        method: 'GET',
+        responseType: 'blob',
+      }).then((res) => {
+        FileDownload(res.data, `${image.title}.jpg`);
+      });
     },
 
   },
