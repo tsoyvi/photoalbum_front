@@ -1,6 +1,6 @@
 export default ({
   state: {
-    errors: null,
+    errors: [],
   },
 
   getters: {
@@ -11,15 +11,15 @@ export default ({
 
   mutations: {
     ADD_ERROR(state, error) {
-      state.errors = error;
-      console.log(`error ->${error}`);
-      console.log(error.response.statusText);
-      console.log(error.response.data.message);
-      console.log(error.response.data.errors);
+      state.errors.push(error);
     },
 
-    RESET_ERROR(state) {
-      state.errors = null;
+    CLOSE_ERROR(state, index) {
+      state.errors.splice(index, 1);
+    },
+
+    RESET_ERRORS(state) {
+      state.errors = [];
     },
   },
 
@@ -28,6 +28,13 @@ export default ({
       commit('ADD_ERROR', error);
     },
 
+    closeError({ commit }, index) {
+      commit('CLOSE_ERROR', index);
+    },
+
+    resetErrors({ commit }) {
+      commit('RESET_ERRORS');
+    },
   },
 
   modules: {
