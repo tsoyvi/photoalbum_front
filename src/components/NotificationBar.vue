@@ -3,11 +3,13 @@
     v-for="(error, index) in errors"
     :key="index"
     :color="'error'"
-    :timeout="6000"
-    v-model="show"
-    @click="closeError(index)"
+    v-model="visible"
+    location="top"
   >
-    {{ error }}
+    {{ error.response?.data?.message ?? error.message ?? error }}
+    <template v-slot:actions>
+      <v-btn variant="plain" icon="mdi-close-box" @click="closeError(index)" />
+    </template>
   </v-snackbar>
 </template>
 
@@ -17,7 +19,7 @@ import { mapGetters, mapActions } from 'vuex';
 export default {
   computed: {
     ...mapGetters(['errors']),
-    show() {
+    visible() {
       return this.errors.length !== 0;
     },
   },
@@ -26,6 +28,3 @@ export default {
   },
 };
 </script>
-
-<style>
-</style>

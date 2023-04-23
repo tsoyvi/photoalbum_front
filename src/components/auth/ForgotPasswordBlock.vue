@@ -61,7 +61,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { mapActions } from 'vuex';
 
 export default {
@@ -83,7 +82,7 @@ export default {
   }),
 
   methods: {
-    ...mapActions(['addError']),
+    ...mapActions(['FORGOT_PASSWORD']),
     openWindow() {
       this.dialog = true;
     },
@@ -92,22 +91,13 @@ export default {
     },
 
     async submit() {
-      axios
-        .post('/api/forgot-password', this.form)
-        .then((response) => {
-          this.status = response.data.status;
-        })
-        .catch((error) => {
-          if (error.response?.data?.message) {
-            this.addError(error.response.data.message);
-          }
-          if (error.response?.data?.errors) {
-            this.errors = error.response.data.errors;
-          }
-        });
+      const result = await this.FORGOT_PASSWORD(this.form);
+      if (result.data?.status) {
+        this.status = result.data.status;
+      } else if (result.error?.response?.data?.errors) {
+        this.errors = result.error.response.data.errors;
+      }
     },
   },
 };
 </script>
-
-<style></style>

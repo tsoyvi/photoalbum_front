@@ -29,6 +29,8 @@
                   label="Email"
                   required
                   v-model="userData.email"
+                  :rules="emailRules"
+                  :error-messages="errors.email"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -39,6 +41,7 @@
                   type="password"
                   required
                   v-model="userData.password"
+                  :error-messages="errors.password"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -49,6 +52,7 @@
                   color="primary"
                   hide-details
                   v-model="userData.remember"
+                  :error-messages="errors.remember"
                 ></v-checkbox>
               </v-col>
             </v-row>
@@ -83,12 +87,18 @@ import { mapActions /* mapGetters */ } from 'vuex';
 export default {
   data: () => ({
     dialog: false,
-
-    userData: {
-      email: 'test@inddcd.tu',
-      password: 'Test12345678',
-      remember: false,
-    },
+    userData: {},
+    errors: {},
+    emailRules: [
+      (value) => {
+        if (value) return true;
+        return 'Поле Email обязательно.';
+      },
+      (value) => {
+        if (/.+@.+\..+/.test(value)) return true;
+        return 'Значение поля Email должно быть действительным электронным адресом.';
+      },
+    ],
   }),
 
   methods: {
@@ -103,8 +113,10 @@ export default {
 
     async loginUser() {
       const result = await this.LOGIN_USER(this.userData);
-      if (result) {
+      if (result.success) {
         this.closeWindow();
+      } else if (result.error?.response?.data?.errors) {
+        this.errors = result.error.response.data.errors;
       }
     },
 
@@ -117,8 +129,8 @@ export default {
     },
 
     openForgotPasswordWindow() {
-      this.$parent.openForgotPasswordWindow();
       this.closeWindow();
+      this.$parent.openForgotPasswordWindow();
     },
   },
 
