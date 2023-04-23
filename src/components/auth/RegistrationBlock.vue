@@ -30,6 +30,7 @@
                   hint="Ваше Имя"
                   required
                   v-model="userData.name"
+                  :error-messages="errors.name"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -42,6 +43,7 @@
                   hint="Укажите желаемое имя пользователя"
                   required
                   v-model="userData.username"
+                  :error-messages="errors.username"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -53,6 +55,8 @@
                   label="Email*"
                   required
                   v-model="userData.email"
+                  :rules="emailRules"
+                  :error-messages="errors.email"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -64,6 +68,7 @@
                   hint="Придумайте пароль"
                   required
                   v-model="userData.password"
+                  :error-messages="errors.password"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -75,6 +80,7 @@
                   hint="Повторите пароль"
                   required
                   v-model="userData.password_confirmation"
+                  :error-messages="errors.password_confirmation"
                 ></v-text-field>
               </v-col>
               <small>*indicates required field</small>
@@ -104,20 +110,19 @@ export default {
   name: 'RegistrationBlock',
   data: () => ({
     dialog: false,
-
-    userData: {
-      name: 'test',
-      username: 'test',
-      email: 'test@inddcd.tu',
-      password: 'Test12345678',
-      password_confirmation: 'Test12345678',
-
-    },
+    userData: {},
+    errors: {},
+    emailRules: [
+      (value) => {
+        if (value) return true;
+        return 'Поле Email обязательно.';
+      },
+      (value) => {
+        if (/.+@.+\..+/.test(value)) return true;
+        return 'Значение поля Email должно быть действительным электронным адресом.';
+      },
+    ],
   }),
-
-  computed: {
-    // ...mapGetters(['']),
-  },
 
   methods: {
     ...mapActions(['REGISTRATION_USER']),
@@ -129,8 +134,13 @@ export default {
       this.dialog = false;
     },
 
-    registrationUser() {
-      this.REGISTRATION_USER(this.userData);
+    async registrationUser() {
+      const result = await this.REGISTRATION_USER(this.userData);
+      if (result.success) {
+        this.closeWindow();
+      } else if (result.error?.response?.data?.errors) {
+        this.errors = result.error.response.data.errors;
+      }
     },
   },
 

@@ -49,28 +49,24 @@ export default ({
 
   actions: {
 
-    async REGISTRATION_USER({ commit }, user) {
+    async REGISTRATION_USER(store, user) {
+      this.dispatch('resetErrors');
       const result = await requests.postJson('/api/register', user);
-      if (result) {
-        console.log(result);
-        commit('SET_FORM_DATA_FILL', result.data.data);
-        return true;
+      if (!result.success && result.error) {
+        this.dispatch('addError', result.error);
       }
-
-      this.dispatch('addError', result.error);
-      return false;
+      return result;
     },
 
-    async LOGIN_USER({ commit }, user) {
+    async LOGIN_USER(store, user) {
+      this.dispatch('resetErrors');
       const result = await requests.postJson('/api/login', user);
-      if (result) {
-        console.log(result);
-        commit('SET_FORM_DATA_FILL', result.data);
+      if (result.success) {
         this.dispatch('СНЕК_LOGIN');
-        return true;
+      } else if (result.error) {
+        this.dispatch('addError', result.error);
       }
-      this.dispatch('addError', result.error);
-      return false;
+      return result;
     },
 
     async СНЕК_LOGIN({ commit }) {
@@ -97,6 +93,15 @@ export default ({
       }
       commit('AUTH_ERROR');
       return false;
+    },
+
+    async FORGOT_PASSWORD(store, data) {
+      this.dispatch('resetErrors');
+      const result = await requests.postJson('/api/forgot-password', data);
+      if (!result.success && result.error) {
+        this.dispatch('addError', result.error);
+      }
+      return result;
     },
 
     async GET_USER_PROFILE({ commit }) {
