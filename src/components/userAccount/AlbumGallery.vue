@@ -160,7 +160,7 @@ export default {
       },
       {
         icon: 'mdi-folder-download-outline',
-        action: null,
+        action: 'downloadAlbum',
       },
       {
         icon: 'mdi-delete-forever-outline',
@@ -176,7 +176,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['GET_ALBUMS', 'DELETE_ALBUMS']),
+    ...mapActions(['GET_ALBUMS', 'DOWNLOAD_ALBUM', 'DELETE_ALBUMS']),
 
     addAlbum() {
       this.$refs.AddAlbumGallery.openWindow();
@@ -192,12 +192,20 @@ export default {
       }
     },
 
+    downloadAlbum(album) {
+      console.log('tred');
+      this.DOWNLOAD_ALBUM(album);
+    },
+
     handlerButton({ action, album }) {
       if (action === 'updateAlbum') {
         this.updateAlbum(album);
       }
       if (action === 'deleteAlbum') {
         this.deleteAlbum(album);
+      }
+      if (action === 'downloadAlbum') {
+        this.downloadAlbum(album);
       }
     },
 

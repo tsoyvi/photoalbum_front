@@ -21,7 +21,7 @@
           v-bind="props"
           >
           <v-img
-            @click="$router.push(`/account/albums/`)"
+            @click="openViewImageWindow(image)"
             :class="{ 'on-hover': isHovering }"
             :src="`/api/v1/posts/${image.id}/s3small`"
             :lazy-src="`https://picsum.photos/500/300?image=${image.id}`"
@@ -82,9 +82,15 @@
 <div v-else>
   <PageNotFound />
 </div>
-<AddImageAlbum
-  ref = "AddImageAlbum"
-/>
+
+  <AddImageAlbum
+    ref = "AddImageAlbum"
+  />
+
+  <ImageViewModalWindow
+    ref="ImageViewModalWindow"
+  ></ImageViewModalWindow>
+
 <v-btn @click="this.GET_IMAGES()"> teset </v-btn>
 </template>
 
@@ -94,6 +100,7 @@ import { mapGetters, mapActions } from 'vuex';
 import PageNotFound from '../PageNotFound.vue';
 import ButtonAddFluid from '../ButtonAddFluid.vue';
 import AddImageAlbum from './AddImageAlbum.vue';
+import ImageViewModalWindow from '../modalWindow/ImageViewModalWindow.vue';
 
 export default {
   name: 'ImageGallery',
@@ -101,6 +108,7 @@ export default {
     PageNotFound,
     ButtonAddFluid,
     AddImageAlbum,
+    ImageViewModalWindow,
   },
 
   data: () => ({
@@ -185,6 +193,10 @@ export default {
 
     downloadImage(image) {
       this.DOWNLOAD_IMAGE(image);
+    },
+
+    openViewImageWindow(image) {
+      this.$refs.ImageViewModalWindow.openWindow(image);
     },
 
   },

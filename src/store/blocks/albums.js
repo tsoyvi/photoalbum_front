@@ -1,3 +1,5 @@
+import axios from 'axios';
+import FileDownload from 'js-file-download';
 import requests from './requests';
 
 export default ({
@@ -118,6 +120,16 @@ export default ({
 
       this.dispatch('addError', result.error);
       return false;
+    },
+
+    async DOWNLOAD_ALBUM(nul, album) {
+      axios({
+        url: `/api/v1/albums/${album.id}/download-zip`,
+        method: 'GET',
+        responseType: 'blob',
+      }).then((res) => {
+        FileDownload(res.data, `${album.title}.zip`);
+      });
     },
 
   },
