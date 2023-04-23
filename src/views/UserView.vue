@@ -5,10 +5,6 @@
   />
   <router-view></router-view>
 
-  <ModalWindow
-    ref="ModalWindow"
-  />
-
 </template>
 
 <script>
@@ -16,13 +12,11 @@ import { mapActions, mapGetters } from 'vuex';
 
 // Components
 import SideBar from '../components/SideBar.vue';
-import ModalWindow from '../components/modalWindow/ModalWindow.vue';
 
 export default {
   name: 'GalleryPage',
   components: {
     SideBar,
-    ModalWindow,
   },
 
   data() {
@@ -60,16 +54,13 @@ export default {
   },
 
   methods: {
-    ...mapActions(['GET_IMAGES']),
-
+    ...mapActions(['']),
+    /*
     selectAlbumCart(album) {
       this.$refs.SideBar.openAlbumsList();
       this.selectAlbum(album);
     },
-
-    openViewImageWindow(image) {
-      this.$refs.ModalWindow.openWindow(image);
-    },
+*/
 
   },
 

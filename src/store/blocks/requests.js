@@ -25,7 +25,7 @@ export default {
       );
       // console.log(data);
       if (result) {
-        return { success: true };
+        return { success: true, data: result.data };
       }
       return { success: false, result };
       //

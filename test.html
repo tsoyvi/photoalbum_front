@@ -1,44 +1,19 @@
-<v-form @submit.prevent="updateProfile">
-    <v-card>
-        <v-card-title>
-            <div class="d-flex justify-space-between">
-                <span class="text-h5">Добавление альбома</span>
-                <v-btn color="primary" variant="plain" class="text-h6 me-n3" @click="closeWindow()">
-                    <v-icon icon="mdi-close"></v-icon>
-                </v-btn>
-            </div>
-        </v-card-title>
-        <v-card-text>
-            <v-container>
-                <v-row>
-                    <v-col cols="12">
-                        <v-text-field label="Title" hint="Название альбома" variant="outlined" required
-                            v-model="album.title"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="12">
-                        <v-textarea label="Album Description" auto-grow variant="outlined" rows="1"
-                            row-height="15"></v-textarea>
-                    </v-col>
-                </v-row>
+<template>
+    <v-row justify="center">
+        <v-dialog v-model="dialog" fullscreen bg-color="light-blue">
 
-                <v-row>
-                    <v-col cols="12">
+            <v-card v-if="image !== null">
 
-                        <v-file-input accept="image/png, image/jpeg, image/bmp" placeholder="Image" prepend-icon="none"
-                            label="Image album" show-size ref="file"></v-file-input>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="12">
-                        <v-btn color="primary" @click="registrationUser()">Register
+                <v-img class="" max-height="95vh" :src="`/api/v1/posts/${image.id}/s3large`" :lazy-src="image.url">
+                    <div class="d-flex justify-space-between">
+                        <span class="text-h5">{{image.title}}</span>
+                        <v-btn color="primary" variant="plain" class="text-h6 me-n3" @click="closeWindow()"><v-icon
+                                icon="mdi-close"></v-icon>
                         </v-btn>
-                    </v-col>
-                </v-row>
-            </v-container>
+                    </div>
+                </v-img>
 
-        </v-card-text>
-
-    </v-card>
-</v-form>
+            </v-card>
+        </v-dialog>
+    </v-row>
+</template>
