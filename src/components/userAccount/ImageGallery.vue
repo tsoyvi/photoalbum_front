@@ -79,7 +79,7 @@
 
 </div>
 
-<div v-else>
+<div v-else-if="selectedAlbum !== null">
   <PageNotFound />
 </div>
 
@@ -91,7 +91,7 @@
     ref="ImageViewModalWindow"
   ></ImageViewModalWindow>
 
-<v-btn @click="this.GET_IMAGES()"> teset </v-btn>
+<!-- <v-btn @click="this.GET_ALBUMS()"> teset </v-btn> -->
 </template>
 
 <script>
@@ -149,17 +149,20 @@ export default {
     },
 
     selectedAlbum() {
-      if (this.selectedAlbumId) {
+      if (this.selectedAlbumId && this.albums.length > 0) {
         // return this.albums.filter((item,  i, ar) => ar.item.id === this.albumId);
         const index = this.albums.findIndex((x) => x.id === this.selectedAlbumId);
         return this.albums[index];
       }
+      console.log('albums');
+      this.GET_ALBUMS();
+
       return null;
     },
   },
 
   methods: {
-    ...mapActions(['GET_IMAGES', 'DOWNLOAD_IMAGE']),
+    ...mapActions(['GET_IMAGES', 'GET_ALBUMS', 'DOWNLOAD_IMAGE']),
 
     addImage() {
       // console.log(this.selectedAlbumId);
