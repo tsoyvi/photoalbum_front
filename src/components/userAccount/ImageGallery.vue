@@ -1,7 +1,12 @@
 <template>
-<div v-if="selectedAlbum">
+<div
+  v-if="selectedAlbum"
+  @dragenter="isDragStarted = true"
+
+  style="height:100vh"
+>
   <VCard class="mx-5 my-2 pa-3">
-    <span class="text-h5">Альбом: {{selectedAlbum.title}}</span>
+    <span class="text-h5">Альбом: {{ selectedAlbum.title }}</span>
   </VCard>
 
   <ButtonAddFluid
@@ -83,6 +88,26 @@
   <PageNotFound />
 </div>
 
+      <div
+        v-if="isDragStarted"
+      >
+
+        <div class="photo-uploader">
+          <div class="photo-uploader__wrapper">
+            <label for="file">
+              <input type="file"
+                multiple
+                title=""
+                class="photo-uploader__input"
+                ref="imageFile"
+                @change="uploadFile"
+              />
+            </label>
+          </div>
+        </div>
+
+      </div>
+
   <AddImageAlbum
     ref = "AddImageAlbum"
   />
@@ -91,7 +116,26 @@
     ref="ImageViewModalWindow"
   ></ImageViewModalWindow>
 
-<!-- <v-btn @click="this.GET_ALBUMS()"> teset </v-btn> -->
+    <div class="loaderImages">
+      <v-card width="400"
+        v-for="(file, index) in filesArray"
+        :key="index"
+      >
+        <v-card-text>
+            <div class="loaderImages__item">
+              <img
+                class="loaderImages__image"
+                :src="getSrc(file)"
+                alt=""
+              >
+              <p class="overflow-x-hidden">
+                This is a subtitle This is content
+              </p>
+          </div>
+          <v-progress-linear color="blue-lighten-3" indeterminate></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </div>
 </template>
 
 <script>
@@ -129,6 +173,8 @@ export default {
         title: 'Поделиться',
       },
     ],
+    isDragStarted: false,
+    filesArray: [],
   }),
 
   computed: {
@@ -159,6 +205,7 @@ export default {
 
       return null;
     },
+
   },
 
   methods: {
@@ -202,6 +249,15 @@ export default {
       this.$refs.ImageViewModalWindow.openWindow(image);
     },
 
+    uploadFile() {
+      this.filesArray = this.$refs.imageFile.files;
+      this.isDragStarted = false;
+    },
+
+    getSrc(photo) {
+      return URL.createObjectURL(photo);
+    },
+
   },
 
   mounted() {
@@ -227,6 +283,63 @@ export default {
 }
 .on-hover {
   opacity: 0.85;
+}
+
+.photo-uploader{
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background-color: rgb(0, 0, 0, 0.2);
+}
+
+.photo-uploader__wrapper{
+  position: relative;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 4px dotted #eee;
+  border-radius: 10px;
+  color: rgb(0, 0, 0, 0.5);
+}
+
+.photo-uploader__input{
+  cursor: pointer;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  opacity: .5;
+}
+
+.loaderImages{
+  right: 10px;
+  bottom: 10px;
+  position: absolute;
+  display: inline-block;
+  max-height: 50vh;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+}
+
+.loaderImages__item{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.loaderImages__image{
+  width: 35px;
+  margin-right: 15px;
 }
 
 </style>
