@@ -131,13 +131,16 @@
               <p class="overflow-x-hidden">
                 {{ file.name }}
               </p>
-              <p class="overflow-x-hidden ml-2" v-if="file.resultLoad">
+              <p class="overflow-x-hidden ml-2" v-if="file.resultLoad === true">
                  <v-icon icon="mdi-check"></v-icon>
+              </p>
+              <p class="overflow-x-hidden ml-2" v-if="file.resultLoad === false">
+                 <v-icon icon="mdi-close"></v-icon>
               </p>
           </div>
           <v-progress-linear color="blue-lighten-3"
             indeterminate
-            v-if="file.resultLoad === false"></v-progress-linear>
+            v-if="file.resultLoad === 'loading'"></v-progress-linear>
         </v-card-text>
       </v-card>
     </div>
@@ -264,7 +267,7 @@ export default {
 
       console.log(this.filesArray.length);
       for (let i = 0; i < this.filesArray.length; i += 1) {
-        this.filesArray[i].resultLoad = false;
+        this.filesArray[i].resultLoad = 'loading';
         // eslint-disable-next-line no-await-in-loop
         const result = await this.addDropImages(this.filesArray[i]);
 
