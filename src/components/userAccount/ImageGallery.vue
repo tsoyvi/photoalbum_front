@@ -129,13 +129,20 @@
                 alt=""
               >
               <p class="overflow-x-hidden">
-                This is a subtitle This is content
+                {{ file.name }}
+              </p>
+              <p class="overflow-x-hidden ml-2" v-if="file.resultLoad">
+                 <v-icon icon="mdi-check"></v-icon>
               </p>
           </div>
-          <v-progress-linear color="blue-lighten-3" indeterminate></v-progress-linear>
+          <v-progress-linear color="blue-lighten-3"
+            indeterminate
+            v-if="file.resultLoad === false"></v-progress-linear>
         </v-card-text>
       </v-card>
     </div>
+    <div style="display: none;"> {{ filesLoaded }} </div>
+
 </template>
 
 <script>
@@ -175,6 +182,8 @@ export default {
     ],
     isDragStarted: false,
     filesArray: [],
+    filesLoaded: [],
+
   }),
 
   computed: {
@@ -209,7 +218,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['GET_IMAGES', 'GET_ALBUMS', 'DOWNLOAD_IMAGE']),
+    ...mapActions(['GET_IMAGES', 'GET_ALBUMS', 'DOWNLOAD_IMAGE', 'CREATE_IMAGE']),
 
     addImage() {
       // console.log(this.selectedAlbumId);
@@ -249,13 +258,42 @@ export default {
       this.$refs.ImageViewModalWindow.openWindow(image);
     },
 
-    uploadFile() {
+    async uploadFile() {
       this.filesArray = this.$refs.imageFile.files;
       this.isDragStarted = false;
+
+      console.log(this.filesArray.length);
+      for (let i = 0; i < this.filesArray.length; i += 1) {
+        this.filesArray[i].resultLoad = false;
+        // eslint-disable-next-line no-await-in-loop
+        const result = await this.addDropImages(this.filesArray[i]);
+
+        this.filesArray[i].resultLoad = result;
+        // console.log(result);
+        this.filesLoaded[i] = result;
+      }
     },
 
     getSrc(photo) {
       return URL.createObjectURL(photo);
+    },
+
+    async addDropImages(file) {
+      console.log(file);
+
+      const formData = new FormData();
+      formData.append('_method', 'POST');
+      formData.append('album_id', this.selectedAlbumId);
+      formData.append('name', file.name);
+      formData.append('description', file.name);
+      formData.append('image', file);
+
+      const result = await this.CREATE_IMAGE(formData);
+      if (result) {
+        return true;
+      }
+
+      return false;
     },
 
   },
