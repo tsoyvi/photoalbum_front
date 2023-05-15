@@ -65,7 +65,11 @@ export default ({
         method: 'GET',
         responseType: 'blob',
       }).then((res) => {
-        FileDownload(res.data, `${image.title}.jpg`);
+        if (image.title !== '') {
+          FileDownload(res.data, `${image.title}.jpg`);
+        } else {
+          FileDownload(res.data, `${image.id}.jpg`);
+        }
       });
     },
 

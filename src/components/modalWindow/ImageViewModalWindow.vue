@@ -48,9 +48,11 @@
 
 <script>
 import { mapActions } from 'vuex';
+import ImagesMixin from '../../mixins/imagesMixin';
 
 export default {
   name: 'ModalWindow',
+  mixins: [ImagesMixin],
   props: {
   },
 
@@ -95,18 +97,6 @@ export default {
         this.deleteImage(image);
       }
     },
-
-    downloadImage(image) {
-      this.DOWNLOAD_IMAGE(image);
-    },
-
-    async deleteImage(image) {
-      const result = await this.DELETE_IMAGE(image);
-      if (result) {
-        this.closeWindow();
-      }
-    },
-
   },
 
 };

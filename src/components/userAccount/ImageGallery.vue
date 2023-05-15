@@ -27,7 +27,7 @@
           >
           <v-img
             @click="openViewImageWindow(image)"
-            :class="{ 'on-hover': isHovering }"
+            :class="{ 'on-hover': isHovering, 'selected-image': image.isSelected }"
             :src="`/api/v1/posts/${image.id}/s3small`"
             :lazy-src="`https://picsum.photos/500/300?image=${image.id}`"
             cover
@@ -146,6 +146,27 @@
     </div>
     <div style="display: none;"> {{ filesLoaded }} </div>
 
+    <v-snackbar
+      color="blue-grey"
+      v-model="isSelectedImage"
+    >
+      <v-btn
+          variant="text"
+          @click="downLoadSelectedImages()"
+      ><v-icon icon="mdi-download"></v-icon> Скачать
+      </v-btn>
+      <v-btn
+          variant="text"
+          @click="deleteSelectedImages()"
+      ><v-icon icon="mdi-delete-forever-outline"></v-icon> удалить
+      </v-btn>
+      <v-btn
+          variant="text"
+      ><v-icon icon="mdi-file-move-outline"></v-icon> &nbsp; переместить
+      </v-btn>
+
+    </v-snackbar>
+
 </template>
 
 <script>
@@ -155,9 +176,12 @@ import PageNotFound from '../PageNotFound.vue';
 import ButtonAddFluid from '../ButtonAddFluid.vue';
 import AddImageAlbum from './AddImageAlbum.vue';
 import ImageViewModalWindow from '../modalWindow/ImageViewModalWindow.vue';
+import ImagesMixin from '../../mixins/imagesMixin';
 
 export default {
   name: 'ImageGallery',
+  mixins: [ImagesMixin],
+
   components: {
     PageNotFound,
     ButtonAddFluid,
@@ -169,7 +193,7 @@ export default {
     icons: [
       {
         icon: 'mdi-check',
-        action: 'updateImage',
+        action: 'selectImage',
         title: 'Выделить',
       },
       {
@@ -218,14 +242,18 @@ export default {
       return null;
     },
 
+    isSelectedImage() {
+      const count = this.imagesInAlbumItems.filter((img) => img.isSelected === true).length;
+      if (count > 0) return true;
+      return false;
+    },
+
   },
 
   methods: {
     ...mapActions(['GET_IMAGES', 'GET_ALBUMS', 'DOWNLOAD_IMAGE', 'CREATE_IMAGE']),
 
     addImage() {
-      // console.log(this.selectedAlbumId);
-      // const idAlbum = JSON.parse(JSON.stringify(this.selectedAlbumId));
       this.$refs.AddImageAlbum.openWindow(this.selectedAlbumId);
     },
 
@@ -251,10 +279,24 @@ export default {
       if (action === 'downloadImage') {
         this.downloadImage(image);
       }
+      if (action === 'selectImage') {
+        this.selectImage(image);
+      }
     },
 
     downloadImage(image) {
       this.DOWNLOAD_IMAGE(image);
+    },
+
+    selectImage(image) {
+      const imagesArray = this.imagesInAlbumItems;
+      const index = imagesArray.findIndex((img) => img === image);
+      if (imagesArray[index].isSelected === undefined) {
+        imagesArray[index].isSelected = false;
+      }
+
+      imagesArray[index].isSelected = !imagesArray[index].isSelected;
+      // this.countSelectedImage(imagesArray);
     },
 
     openViewImageWindow(image) {
@@ -265,7 +307,6 @@ export default {
       this.filesArray = this.$refs.imageFile.files;
       this.isDragStarted = false;
 
-      console.log(this.filesArray.length);
       for (let i = 0; i < this.filesArray.length; i += 1) {
         this.filesArray[i].resultLoad = 'loading';
         // eslint-disable-next-line no-await-in-loop
@@ -282,12 +323,10 @@ export default {
     },
 
     async addDropImages(file) {
-      console.log(file);
-
       const formData = new FormData();
       formData.append('_method', 'POST');
       formData.append('album_id', this.selectedAlbumId);
-      formData.append('name', file.name);
+      formData.append('title', file.name);
       formData.append('description', file.name);
       formData.append('image', file);
 
@@ -324,6 +363,10 @@ export default {
 }
 .on-hover {
   opacity: 0.85;
+}
+
+.selected-image{
+  outline: rgb(183, 0, 255) solid 4px;
 }
 
 .photo-uploader{
@@ -363,7 +406,7 @@ export default {
 .loaderImages{
   right: 10px;
   bottom: 10px;
-  position: absolute;
+  position: fixed;
   display: inline-block;
   max-height: 50vh;
   overflow-y: auto;
