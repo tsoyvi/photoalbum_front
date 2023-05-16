@@ -71,6 +71,16 @@ export default {
         title: 'Поделиться',
       },
       {
+        icon: 'mdi-rotate-right',
+        action: 'rotateImageRight',
+        title: '',
+      },
+      {
+        icon: 'mdi-rotate-left',
+        action: 'rotateImageLeft',
+        title: '',
+      },
+      {
         icon: 'mdi-delete-forever-outline',
         action: 'deleteImage',
         title: 'удалить',
@@ -95,6 +105,12 @@ export default {
       }
       if (action === 'deleteImage') {
         this.deleteImage(image);
+      }
+      if (action === 'rotateImageRight') {
+        this.rotateImage({ image, schema: { angle: 270 } });
+      }
+      if (action === 'rotateImageLeft') {
+        this.rotateImage({ image, schema: { angle: 90 } });
       }
     },
   },

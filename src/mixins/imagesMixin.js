@@ -2,10 +2,14 @@ import { mapActions } from 'vuex';
 
 export default {
   methods: {
-    ...mapActions(['DOWNLOAD_IMAGE', 'DELETE_IMAGE']),
+    ...mapActions(['DOWNLOAD_IMAGE', 'ROTATE_IMAGE', 'DELETE_IMAGE']),
 
     downloadImage(image) {
       this.DOWNLOAD_IMAGE(image);
+    },
+
+    rotateImage(image) {
+      this.ROTATE_IMAGE(image);
     },
 
     async deleteImage(image) {
