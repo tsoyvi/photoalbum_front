@@ -1,7 +1,12 @@
 <template>
-<div v-if="selectedAlbum">
+<div
+  v-if="selectedAlbum"
+  @dragenter="isDragStarted = true"
+
+  style="height:100vh"
+>
   <VCard class="mx-5 my-2 pa-3">
-    <span class="text-h5">Альбом: {{selectedAlbum.title}}</span>
+    <span class="text-h5">Альбом: {{ selectedAlbum.title }}</span>
   </VCard>
 
   <ButtonAddFluid
@@ -22,7 +27,7 @@
           >
           <v-img
             @click="openViewImageWindow(image)"
-            :class="{ 'on-hover': isHovering }"
+            :class="{ 'on-hover': isHovering, 'selected-image': image.isSelected }"
             :src="`/api/v1/posts/${image.id}/s3small`"
             :lazy-src="`https://picsum.photos/500/300?image=${image.id}`"
             cover
@@ -83,6 +88,26 @@
   <PageNotFound />
 </div>
 
+      <div
+        v-if="isDragStarted"
+      >
+
+        <div class="photo-uploader">
+          <div class="photo-uploader__wrapper">
+            <label for="file">
+              <input type="file"
+                multiple
+                title=""
+                class="photo-uploader__input"
+                ref="imageFile"
+                @change="uploadFile"
+              />
+            </label>
+          </div>
+        </div>
+
+      </div>
+
   <AddImageAlbum
     ref = "AddImageAlbum"
   />
@@ -91,7 +116,57 @@
     ref="ImageViewModalWindow"
   ></ImageViewModalWindow>
 
-<!-- <v-btn @click="this.GET_ALBUMS()"> teset </v-btn> -->
+    <div class="loaderImages">
+      <v-card width="400"
+        v-for="(file, index) in filesArray"
+        :key="index"
+      >
+        <v-card-text>
+            <div class="loaderImages__item">
+              <img
+                class="loaderImages__image"
+                :src="getSrc(file)"
+                alt=""
+              >
+              <p class="overflow-x-hidden">
+                {{ file.name }}
+              </p>
+              <p class="overflow-x-hidden ml-2" v-if="file.resultLoad === true">
+                 <v-icon icon="mdi-check"></v-icon>
+              </p>
+              <p class="overflow-x-hidden ml-2" v-if="file.resultLoad === false">
+                 <v-icon icon="mdi-close"></v-icon>
+              </p>
+          </div>
+          <v-progress-linear color="blue-lighten-3"
+            indeterminate
+            v-if="file.resultLoad === 'loading'"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </div>
+    <div style="display: none;"> {{ filesLoaded }} </div>
+
+    <v-snackbar
+      color="blue-grey"
+      v-model="isSelectedImage"
+    >
+      <v-btn
+          variant="text"
+          @click="downLoadSelectedImages()"
+      ><v-icon icon="mdi-download"></v-icon> Скачать
+      </v-btn>
+      <v-btn
+          variant="text"
+          @click="deleteSelectedImages()"
+      ><v-icon icon="mdi-delete-forever-outline"></v-icon> удалить
+      </v-btn>
+      <v-btn
+          variant="text"
+      ><v-icon icon="mdi-file-move-outline"></v-icon> &nbsp; переместить
+      </v-btn>
+
+    </v-snackbar>
+
 </template>
 
 <script>
@@ -101,9 +176,12 @@ import PageNotFound from '../PageNotFound.vue';
 import ButtonAddFluid from '../ButtonAddFluid.vue';
 import AddImageAlbum from './AddImageAlbum.vue';
 import ImageViewModalWindow from '../modalWindow/ImageViewModalWindow.vue';
+import ImagesMixin from '../../mixins/imagesMixin';
 
 export default {
   name: 'ImageGallery',
+  mixins: [ImagesMixin],
+
   components: {
     PageNotFound,
     ButtonAddFluid,
@@ -115,7 +193,7 @@ export default {
     icons: [
       {
         icon: 'mdi-check',
-        action: 'updateImage',
+        action: 'selectImage',
         title: 'Выделить',
       },
       {
@@ -129,6 +207,10 @@ export default {
         title: 'Поделиться',
       },
     ],
+    isDragStarted: false,
+    filesArray: [],
+    filesLoaded: [],
+
   }),
 
   computed: {
@@ -159,14 +241,19 @@ export default {
 
       return null;
     },
+
+    isSelectedImage() {
+      const count = this.imagesInAlbumItems.filter((img) => img.isSelected === true).length;
+      if (count > 0) return true;
+      return false;
+    },
+
   },
 
   methods: {
-    ...mapActions(['GET_IMAGES', 'GET_ALBUMS', 'DOWNLOAD_IMAGE']),
+    ...mapActions(['GET_IMAGES', 'GET_ALBUMS', 'DOWNLOAD_IMAGE', 'CREATE_IMAGE']),
 
     addImage() {
-      // console.log(this.selectedAlbumId);
-      // const idAlbum = JSON.parse(JSON.stringify(this.selectedAlbumId));
       this.$refs.AddImageAlbum.openWindow(this.selectedAlbumId);
     },
 
@@ -192,14 +279,63 @@ export default {
       if (action === 'downloadImage') {
         this.downloadImage(image);
       }
+      if (action === 'selectImage') {
+        this.selectImage(image);
+      }
     },
 
     downloadImage(image) {
       this.DOWNLOAD_IMAGE(image);
     },
 
+    selectImage(image) {
+      const imagesArray = this.imagesInAlbumItems;
+      const index = imagesArray.findIndex((img) => img === image);
+      if (imagesArray[index].isSelected === undefined) {
+        imagesArray[index].isSelected = false;
+      }
+
+      imagesArray[index].isSelected = !imagesArray[index].isSelected;
+      // this.countSelectedImage(imagesArray);
+    },
+
     openViewImageWindow(image) {
       this.$refs.ImageViewModalWindow.openWindow(image);
+    },
+
+    async uploadFile() {
+      this.filesArray = this.$refs.imageFile.files;
+      this.isDragStarted = false;
+
+      for (let i = 0; i < this.filesArray.length; i += 1) {
+        this.filesArray[i].resultLoad = 'loading';
+        // eslint-disable-next-line no-await-in-loop
+        const result = await this.addDropImages(this.filesArray[i]);
+
+        this.filesArray[i].resultLoad = result;
+        // console.log(result);
+        this.filesLoaded[i] = result;
+      }
+    },
+
+    getSrc(photo) {
+      return URL.createObjectURL(photo);
+    },
+
+    async addDropImages(file) {
+      const formData = new FormData();
+      formData.append('_method', 'POST');
+      formData.append('album_id', this.selectedAlbumId);
+      formData.append('title', file.name);
+      formData.append('description', file.name);
+      formData.append('image', file);
+
+      const result = await this.CREATE_IMAGE(formData);
+      if (result) {
+        return true;
+      }
+
+      return false;
     },
 
   },
@@ -227,6 +363,67 @@ export default {
 }
 .on-hover {
   opacity: 0.85;
+}
+
+.selected-image{
+  outline: rgb(183, 0, 255) solid 4px;
+}
+
+.photo-uploader{
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background-color: rgb(0, 0, 0, 0.2);
+}
+
+.photo-uploader__wrapper{
+  position: relative;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 4px dotted #eee;
+  border-radius: 10px;
+  color: rgb(0, 0, 0, 0.5);
+}
+
+.photo-uploader__input{
+  cursor: pointer;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  opacity: .5;
+}
+
+.loaderImages{
+  right: 10px;
+  bottom: 10px;
+  position: fixed;
+  display: inline-block;
+  max-height: 50vh;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+}
+
+.loaderImages__item{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.loaderImages__image{
+  width: 35px;
+  margin-right: 15px;
 }
 
 </style>

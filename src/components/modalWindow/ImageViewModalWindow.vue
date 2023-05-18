@@ -48,9 +48,11 @@
 
 <script>
 import { mapActions } from 'vuex';
+import ImagesMixin from '../../mixins/imagesMixin';
 
 export default {
   name: 'ModalWindow',
+  mixins: [ImagesMixin],
   props: {
   },
 
@@ -67,6 +69,16 @@ export default {
         icon: 'mdi-link-variant',
         action: 'null',
         title: 'Поделиться',
+      },
+      {
+        icon: 'mdi-rotate-right',
+        action: 'rotateImageRight',
+        title: '',
+      },
+      {
+        icon: 'mdi-rotate-left',
+        action: 'rotateImageLeft',
+        title: '',
       },
       {
         icon: 'mdi-delete-forever-outline',
@@ -94,19 +106,13 @@ export default {
       if (action === 'deleteImage') {
         this.deleteImage(image);
       }
-    },
-
-    downloadImage(image) {
-      this.DOWNLOAD_IMAGE(image);
-    },
-
-    async deleteImage(image) {
-      const result = await this.DELETE_IMAGE(image);
-      if (result) {
-        this.closeWindow();
+      if (action === 'rotateImageRight') {
+        this.rotateImage({ image, schema: { angle: 270 } });
+      }
+      if (action === 'rotateImageLeft') {
+        this.rotateImage({ image, schema: { angle: 90 } });
       }
     },
-
   },
 
 };

@@ -26,6 +26,21 @@ export default ({
       state.images.unshift(image);
     },
 
+    UPDATE_IMAGE(state, editedImage) {
+      let urlImage = `/api/v1/posts/${editedImage.id}/s3large`;
+
+      fetch(urlImage, { cache: 'reload', mode: 'no-cors' });
+      document.body.querySelectorAll(`img[src='${urlImage}']`)
+        // eslint-disable-next-line no-return-assign, no-param-reassign
+        .forEach((img) => img.src = urlImage);
+
+      urlImage = `/api/v1/posts/${editedImage.id}/s3small`;
+      fetch(urlImage, { cache: 'reload', mode: 'no-cors' });
+      document.body.querySelectorAll(`img[src='${urlImage}']`)
+        // eslint-disable-next-line no-return-assign, no-param-reassign
+        .forEach((img) => img.src = urlImage);
+    },
+
     DELETE_IMAGE(state, image) {
       state.images = state.images.filter((item) => item.id !== image.id);
     },
@@ -65,8 +80,31 @@ export default ({
         method: 'GET',
         responseType: 'blob',
       }).then((res) => {
-        FileDownload(res.data, `${image.title}.jpg`);
+        if (image.title !== '') {
+          FileDownload(res.data, `${image.title}.jpg`);
+        } else {
+          FileDownload(res.data, `${image.id}.jpg`);
+        }
       });
+    },
+
+    async ROTATE_IMAGE({ commit }, { image, schema }) {
+      /* const schema = {
+        size": "S",
+        "angle": 90,
+        "bgcolor": "#ffffff"
+      }; */
+
+      const result = await requests.postJson(`/api/v1/posts/${image.id}/rotate`, schema);
+      if (result.success === true) {
+        // console.log(result.data);
+        commit('UPDATE_IMAGE', image);
+
+        return true;
+      }
+
+      this.dispatch('addError', result.error);
+      return false;
     },
 
     async DELETE_IMAGE({ commit }, image) {
