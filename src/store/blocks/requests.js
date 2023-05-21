@@ -1,5 +1,11 @@
 import axios from 'axios';
 
+axios.defaults.baseURL = process.env.VUE_APP_SERVER_APP_URL;
+axios.defaults.auth = {
+  username: process.env.VUE_APP_SERVER_APP_LOGIN,
+  password: process.env.VUE_APP_SERVER_APP_PASS,
+};
+
 export default {
 
   /**
@@ -17,64 +23,37 @@ export default {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-          auth: {
-            username: process.env.VUE_APP_SERVER_APP_LOGIN,
-            password: process.env.VUE_APP_SERVER_APP_PASS,
-          },
         },
       );
-      // console.log(data);
       if (result) {
         return { success: true, data: result.data };
       }
       return { success: false, result };
-      //
     } catch (error) {
-      console.log(error);
       return { success: false, error };
     }
   },
 
   async getJson(url) {
     try {
-      const result = await axios.get(url, {
-        auth: {
-          username: process.env.VUE_APP_SERVER_APP_LOGIN,
-          password: process.env.VUE_APP_SERVER_APP_PASS,
-        },
-      });
-
-      // console.log(result);
-
+      const result = await axios.get(url);
       if (result) {
         return { success: true, data: result.data };
       }
       return { success: false, error: result.message };
     } catch (error) {
-      console.log(error);
       return { success: false, error };
     }
   },
 
   async postJson(url, pData) {
     try {
-      const result = await axios.post(
-        url,
-        pData,
-        {
-          auth: {
-            username: process.env.VUE_APP_SERVER_APP_LOGIN,
-            password: process.env.VUE_APP_SERVER_APP_PASS,
-          },
-        },
-      );
-      console.log(result);
+      const result = await axios.post(url, pData);
       if (result) {
         return { success: true, data: result.data };
       }
       return { success: false, error: result.data.message };
     } catch (error) {
-      console.log(error);
       return { success: false, error };
     }
   },
@@ -82,13 +61,11 @@ export default {
   async putJson(url, pData) {
     try {
       const { data } = await axios.put(url, pData);
-
       if (data) {
         return { success: true, data };
       }
       return { success: false, error: data.message };
     } catch (error) {
-      console.log(error);
       return { success: false, error };
     }
   },
@@ -96,13 +73,11 @@ export default {
   async patchJson(url, pData) {
     try {
       const { data } = await axios.patch(url, pData);
-      console.log(data);
       if (data) {
         return { success: true, data };
       }
       return { success: false, error: data.message };
     } catch (error) {
-      console.log(error);
       return { success: false, error };
     }
   },
@@ -116,7 +91,6 @@ export default {
       }
       return { success: false, error: result.data.message };
     } catch (error) {
-      console.log(error);
       return { success: false, error };
     }
   },
@@ -126,16 +100,9 @@ export default {
       const result = await axios.get(
         url,
         {
-          // responseType: 'stream',
           responseType: 'arraybuffer',
-          auth: {
-            username: process.env.VUE_APP_SERVER_APP_LOGIN,
-            password: process.env.VUE_APP_SERVER_APP_PASS,
-          },
         },
       );
-
-      // console.log(result.data);
 
       if (result) {
         const img = `data:image/jpeg;base64,${btoa(
@@ -145,7 +112,6 @@ export default {
       }
       return { success: false };
     } catch (error) {
-      console.log(error);
       return { success: false, error };
     }
   },
