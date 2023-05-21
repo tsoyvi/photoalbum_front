@@ -60,6 +60,8 @@
             <v-row>
               <v-col cols="12">
                 <v-btn color="primary"
+                  :loading="loading"
+                  :disabled="loading"
                   @click="loginUser()"
                 >LOGIN</v-btn>
 
@@ -99,6 +101,7 @@ export default {
         return 'Значение поля Email должно быть действительным электронным адресом.';
       },
     ],
+    loading: null,
   }),
 
   methods: {
@@ -112,12 +115,14 @@ export default {
     },
 
     async loginUser() {
+      this.loading = true;
       const result = await this.LOGIN_USER(this.userData);
       if (result.success) {
         this.closeWindow();
       } else if (result.error?.response?.data?.errors) {
         this.errors = result.error.response.data.errors;
       }
+      this.loading = false;
     },
 
     check_login() {

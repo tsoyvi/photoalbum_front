@@ -56,6 +56,22 @@
                                 </v-file-input>
                             </v-col>
                         </v-row>
+
+                        <v-row class="my-n8">
+                          <v-col cols="12">
+                            <v-checkbox
+                              color="indigo"
+                              prepend-icon="mdi-link-variant"
+                              label="Публичный альбом"
+                              v-model="album.is_public">
+                            </v-checkbox>
+                          </v-col>
+                        </v-row>
+                        <v-row class="my-n10">
+                          <v-col cols="12">
+                          </v-col>
+                        </v-row>
+
                         <v-row>
                             <v-col cols="12">
                                 <v-btn
@@ -89,6 +105,7 @@ export default {
       title: '',
       description: '',
       image: '',
+      is_public: false,
     },
     loading: null,
   }),
@@ -120,6 +137,8 @@ export default {
 
       albumKeys.forEach((key) => {
         if (key !== 'image') {
+          if (this.album[key] === true) this.album[key] = '1';
+          if (this.album[key] === false) this.album[key] = '0';
           formData.append(key, this.album[key]);
         } else {
           formData.append('image', vm);

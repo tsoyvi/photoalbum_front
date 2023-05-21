@@ -26,10 +26,10 @@
           v-bind="props"
           >
           <v-img
-            @click="openViewImageWindow(image)"
+            @click="openViewImageWindow(imagesInAlbumItems, index)"
             :class="{ 'on-hover': isHovering, 'selected-image': image.isSelected }"
             :src="`/api/v1/posts/${image.id}/s3small`"
-            :lazy-src="`https://picsum.photos/500/300?image=${image.id}`"
+            :lazy-src="'/images/bg_img_default_5.jpg'"
             cover
             height="100%"
           >
@@ -66,7 +66,7 @@
               class="px-2">
               <v-img
                 :src="`/api/v1/posts/${image.id}/s3small`"
-                :lazy-src="`https://picsum.photos/500/300?image=${ subIndex }`"
+                :lazy-src="'images/bg_img_default_0.jpg'"
                 cover
                 height="100%"
               >
@@ -299,8 +299,8 @@ export default {
       // this.countSelectedImage(imagesArray);
     },
 
-    openViewImageWindow(image) {
-      this.$refs.ImageViewModalWindow.openWindow(image);
+    openViewImageWindow(image, index) {
+      this.$refs.ImageViewModalWindow.openWindow(image, index);
     },
 
     async uploadFile() {

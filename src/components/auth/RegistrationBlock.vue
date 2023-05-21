@@ -89,6 +89,8 @@
             <v-row>
               <v-col cols="12">
                 <v-btn color="primary"
+                  :loading="loading"
+                  :disabled="loading"
                   @click="registrationUser()"
                   >Register
                 </v-btn>
@@ -122,6 +124,7 @@ export default {
         return 'Значение поля Email должно быть действительным электронным адресом.';
       },
     ],
+    loading: null,
   }),
 
   methods: {
@@ -135,12 +138,15 @@ export default {
     },
 
     async registrationUser() {
+      this.loading = true;
       const result = await this.REGISTRATION_USER(this.userData);
       if (result.success) {
         this.closeWindow();
+        window.location.reload();
       } else if (result.error?.response?.data?.errors) {
         this.errors = result.error.response.data.errors;
       }
+      this.loading = false;
     },
   },
 

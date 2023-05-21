@@ -11,6 +11,7 @@
         <v-row
           class="fill-height"
         >
+
           <template v-for="(album) in albums" :key="album.id">
 
            <v-col
@@ -25,6 +26,12 @@
                   :class="{ 'on-hover': isHovering }"
                   v-bind="props"
                 >
+                <v-badge
+                  class="badge-count-images"
+                  color="success"
+                  :content="album.id"
+                  inline
+                  ></v-badge>
                 <div class="stackone"
                   @click="$router.push(`/account/albums/${album.id}`)"
                   @keydown="bar"
@@ -73,9 +80,11 @@
                     </v-row>
                   </template>
                   </v-img>
+
                   <v-img v-else
                     class="image-album stackone0"
                     height="225px"
+                    :src="'/images/bg_img_default_0.jpg'"
                     cover
                   >
                     <v-card-title class="text-h6 text-white d-flex flex-column">
@@ -86,27 +95,27 @@
                   </v-img>
 
                   <v-img class="stackone1"
-                    :src="'https://picsum.photos/500/300?image=22'"
+                    :src="'/images/bg_img_default_2.jpg'"
                     :lazy-src="album.url"
                     cover
                   ></v-img>
                   <v-img class="stackone2"
-                    :src="'https://picsum.photos/500/300?image=43'"
+                    :src="'/images/bg_img_default_4.jpg'"
                     :lazy-src="album.url"
                     cover
                   ></v-img>
                   <v-img class="stackone3"
-                    :src="'https://picsum.photos/500/300?image=41'"
+                    :src="'/images/bg_img_default_3.jpg'"
                     :lazy-src="album.url"
                     cover
                   ></v-img>
-
                 </div>
                 </v-card>
               </v-hover>
             </v-col>
           </template>
         </v-row>
+
       </v-container>
 
   <AddAlbumGallery
@@ -257,7 +266,7 @@ export default {
   top: 13px;
   left: 0px;
   transform: rotate(-1deg);
-
+  opacity: 0.85;
 }
 
 .stackone1 {
@@ -279,7 +288,7 @@ export default {
   z-index: 0;
   top: 0px;
   left: -2px;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  /*box-shadow: 2px 2px 5px rgba(0,0,0,0.3);*/
   transform: rotate(-1.5deg);
   opacity: 0.9;
 }
@@ -294,6 +303,12 @@ export default {
   box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
   transform: rotate(-1deg);
   opacity: 0.9;
+}
+
+.badge-count-images {
+  position: absolute;
+  z-index: 100;
+  right: 0px;
 }
 
 </style>
