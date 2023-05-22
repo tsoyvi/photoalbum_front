@@ -8,8 +8,10 @@ export default {
       this.DOWNLOAD_IMAGE(image);
     },
 
-    rotateImage(image) {
-      this.ROTATE_IMAGE(image);
+    async rotateImage(image) {
+      this.isLoadImage = true;
+      await this.ROTATE_IMAGE(image);
+      this.isLoadImage = false;
     },
 
     async deleteImage(image) {

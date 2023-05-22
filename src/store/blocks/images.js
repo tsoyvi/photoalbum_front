@@ -29,11 +29,12 @@ export default ({
     UPDATE_IMAGE(state, editedImage) {
       let urlImage = `/api/v1/posts/${editedImage.id}/s3large`;
 
-      fetch(urlImage, { cache: 'reload', mode: 'no-cors' });
+      /*      fetch(urlImage, { cache: 'reload' });
+
       document.body.querySelectorAll(`img[src='${urlImage}']`)
         // eslint-disable-next-line no-return-assign, no-param-reassign
         .forEach((img) => img.src = urlImage);
-
+*/
       urlImage = `/api/v1/posts/${editedImage.id}/s3small`;
       fetch(urlImage, { cache: 'reload', mode: 'no-cors' });
       document.body.querySelectorAll(`img[src='${urlImage}']`)

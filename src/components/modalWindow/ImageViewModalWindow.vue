@@ -5,8 +5,9 @@
             <v-card v-if="images !== null">
                 <v-carousel height="100vh" hide-delimiters show-arrows="hover" v-model="imageIndex">
                     <v-carousel-item v-for="(image, i) in images" :key="i">
-                        <v-img class=""
-                          :src="`/api/v1/posts/${image.id}/s3large`"
+                        <v-img v-if="!isLoadImage"
+                          height="100vh"
+                          :src="`/api/v1/posts/${image.id}/s3large?lastMod=${Date.now()}`"
                           :lazy-src="image.url">
                             <div class="d-flex justify-space-between mx-2 mt-2">
                                 <span class="text-h5">{{image.title}}</span>
@@ -29,6 +30,19 @@
                                 </v-row>
                             </template>
                         </v-img>
+                        <v-row
+                          v-if="isLoadImage"
+                          class="fill-height ma-0"
+                          align="center"
+                          justify="center"
+
+                          >
+                          <v-progress-circular
+                            :width="3"
+                            color="green"
+                            indeterminate
+                          ></v-progress-circular>
+                        </v-row>
                     </v-carousel-item>
                 </v-carousel>
             </v-card>
@@ -77,6 +91,7 @@ export default {
       },
     ],
     imageIndex: null,
+    isLoadImage: false,
   }),
 
   methods: {
