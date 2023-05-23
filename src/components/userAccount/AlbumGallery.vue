@@ -29,7 +29,7 @@
                 <v-badge
                   class="badge-count-images"
                   color="success"
-                  :content="album.id"
+                  :content="album.posts_count"
                   inline
                   ></v-badge>
                 <div class="stackone"
