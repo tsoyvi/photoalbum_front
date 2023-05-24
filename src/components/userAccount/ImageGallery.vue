@@ -13,6 +13,10 @@
     @click="addImage()"
   />
 
+<v-infinite-scroll
+    height="400"
+    @load="load"
+  >
   <VCard class="mx-5 my-2 pa-3">
     <v-row>
       <div class="text-h5 pa-3" v-if="!imagesInAlbumItems.length">Папка пуста</div>
@@ -81,7 +85,7 @@
     </v-row>
 
   </VCard>
-
+</v-infinite-scroll>
 </div>
 
 <div v-else-if="selectedAlbum !== null">
