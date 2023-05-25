@@ -16,7 +16,11 @@ export default ({
 
   mutations: {
     SET_IMAGES(state, images) {
-      state.images = images;
+      // state.images = [...images];
+      state.images = state.images.concat(images);
+      /* console.log(state.images);
+      state.images = images; */
+      console.log(state.images);
     },
 
     ADD_IMAGE(state, image) {
@@ -75,6 +79,22 @@ export default ({
       return false;
     },
 
+    // eslint-disable-next-line no-unused-vars
+    async GET_IMAGES_IN_ALBUM({ commit }, payload = null) {
+      // /api/v1/albums/{album_id}/posts
+      console.log(payload.albumId);
+      const result = await requests.getJson(`/api/v1/albums/${payload.albumId}/posts?page=${payload.page}`);
+      if (result.success === true) {
+        console.log(result.data);
+        commit('SET_IMAGES', result.data.data);
+
+        return true;
+      }
+
+      this.dispatch('addError', result.error);
+
+      return false;
+    },
     async DOWNLOAD_IMAGE(nul, image) {
       axios({
         url: `/api/v1/posts/${image.id}/s3large`,

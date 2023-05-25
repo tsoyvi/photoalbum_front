@@ -13,10 +13,6 @@
     @click="addImage()"
   />
 
-<v-infinite-scroll
-    height="400"
-    @load="load"
-  >
   <VCard class="mx-5 my-2 pa-3">
     <v-row>
       <div class="text-h5 pa-3" v-if="!imagesInAlbumItems.length">Папка пуста</div>
@@ -85,7 +81,7 @@
     </v-row>
 
   </VCard>
-</v-infinite-scroll>
+
 </div>
 
 <div v-else-if="selectedAlbum !== null">
@@ -214,6 +210,7 @@ export default {
     isDragStarted: false,
     filesArray: [],
     filesLoaded: [],
+    isLoadingAddImages: false,
 
   }),
 
@@ -240,7 +237,6 @@ export default {
         const index = this.albums.findIndex((x) => x.id === this.selectedAlbumId);
         return this.albums[index];
       }
-      console.log('albums');
       this.GET_ALBUMS();
 
       return null;
@@ -255,7 +251,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['GET_IMAGES', 'GET_ALBUMS', 'DOWNLOAD_IMAGE', 'CREATE_IMAGE']),
+    ...mapActions(['GET_IMAGES', 'GET_IMAGES_IN_ALBUM', 'GET_ALBUMS', 'DOWNLOAD_IMAGE', 'CREATE_IMAGE']),
 
     addImage() {
       this.$refs.AddImageAlbum.openWindow(this.selectedAlbumId);
@@ -342,10 +338,30 @@ export default {
       return false;
     },
 
+    scrollPageLoader() {
+      const { scrollHeight } = document.documentElement;
+      const { clientHeight } = document.documentElement;
+      const height = scrollHeight - clientHeight;
+
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+
+      console.log(height, scrollTop);
+      if (height < scrollTop + 100 && !this.isLoadingAddImages) {
+      // добавим больше данных
+        this.isLoadingAddImages = true;
+        console.log(this.selectedAlbum.id);
+        this.GET_IMAGES_IN_ALBUM({ albumId: this.selectedAlbum.id, page: 2 });
+      }
+    },
+
   },
 
   mounted() {
     this.GET_IMAGES();
+
+    window.addEventListener('scroll', () => {
+      this.scrollPageLoader();
+    });
   },
 
 };
