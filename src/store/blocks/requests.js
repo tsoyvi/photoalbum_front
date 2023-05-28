@@ -5,6 +5,7 @@ axios.defaults.auth = {
   username: process.env.VUE_APP_SERVER_APP_LOGIN,
   password: process.env.VUE_APP_SERVER_APP_PASS,
 };
+axios.defaults.withCredentials = true;
 
 export default {
 
