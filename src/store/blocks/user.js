@@ -70,9 +70,9 @@ export default ({
     },
 
     async СНЕК_LOGIN({ commit }) {
-      commit('AUTH_REQUEST');// /api/v1/user
+      commit('AUTH_REQUEST');// /v1/user
 
-      const result = await requests.getJson('/api/v1/user');
+      const result = await requests.getJson('/v1/user');
       // console.log(result);
       if (result.success) {
         commit('AUTH_SUCCESS', result.data);
@@ -105,7 +105,7 @@ export default ({
     },
 
     async GET_USER_PROFILE({ commit }) {
-      const result = await requests.getJson('/api/v1/profile');
+      const result = await requests.getJson('/v1/profile');
       // console.log(result);
       if (result.success) {
         commit('USER_PROFILE', result.data);
@@ -117,7 +117,7 @@ export default ({
     },
     /*
         async GET_USER_AVATAR({ commit }) {
-          const result = await requests.getImg('/api/v1/profile/s3avatar/');
+          const result = await requests.getImg('/v1/profile/s3avatar/');
           // console.log(result.data);
           if (result.success) {
             commit('USER_PROFILE', { image: result.data });
@@ -128,8 +128,8 @@ export default ({
         },
     */
     async UPDATE_USER_PROFILE({ commit }, user) {
-      // const result = await requests.patchJson('/api/v1/profile', user);
-      const result = await requests.uploadFile('/api/v1/profile', user);
+      // const result = await requests.patchJson('/v1/profile', user);
+      const result = await requests.uploadFile('/v1/profile', user);
       console.log(user);
       if (result) {
         console.log(result);
@@ -142,7 +142,7 @@ export default ({
     },
 
     async UPLOAD_USER_AVATAR({ commit }, userImage) {
-      const result = await requests.uploadFile('/api/v1/profile', userImage);
+      const result = await requests.uploadFile('/v1/profile', userImage);
       console.log(userImage);
       if (result) {
         // console.log(result);

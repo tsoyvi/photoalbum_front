@@ -27,7 +27,7 @@ export default ({
     },
 
     UPDATE_IMAGE(state, editedImage) {
-      let urlImage = `/api/v1/posts/${editedImage.id}/s3large`;
+      let urlImage = `/v1/posts/${editedImage.id}/s3large`;
 
       /*      fetch(urlImage, { cache: 'reload' });
 
@@ -35,7 +35,7 @@ export default ({
         // eslint-disable-next-line no-return-assign, no-param-reassign
         .forEach((img) => img.src = urlImage);
 */
-      urlImage = `/api/v1/posts/${editedImage.id}/s3small`;
+      urlImage = `/v1/posts/${editedImage.id}/s3small`;
       fetch(urlImage, { cache: 'reload', mode: 'no-cors' });
       document.body.querySelectorAll(`img[src='${urlImage}']`)
         // eslint-disable-next-line no-return-assign, no-param-reassign
@@ -51,7 +51,7 @@ export default ({
   actions: {
 
     async CREATE_IMAGE({ commit }, image) {
-      const result = await requests.uploadFile('/api/v1/posts', image);
+      const result = await requests.uploadFile('/v1/posts', image);
       if (result.success === true) {
         commit('ADD_IMAGE', result.data);
         // this.dispatch('GET_ALBUMS');
@@ -63,7 +63,7 @@ export default ({
     },
 
     async GET_IMAGES({ commit }) {
-      const result = await requests.getJson('/api/v1/posts');
+      const result = await requests.getJson('/v1/posts');
       if (result.success === true) {
         console.log(result.data);
         commit('SET_IMAGES', result.data.data);
@@ -77,7 +77,7 @@ export default ({
 
     async DOWNLOAD_IMAGE(nul, image) {
       axios({
-        url: `/api/v1/posts/${image.id}/s3large`,
+        url: `/v1/posts/${image.id}/s3large`,
         method: 'GET',
         responseType: 'blob',
       }).then((res) => {
@@ -96,7 +96,7 @@ export default ({
         "bgcolor": "#ffffff"
       }; */
 
-      const result = await requests.postJson(`/api/v1/posts/${image.id}/rotate`, schema);
+      const result = await requests.postJson(`/v1/posts/${image.id}/rotate`, schema);
       if (result.success === true) {
         // console.log(result.data);
         commit('UPDATE_IMAGE', image);
@@ -109,7 +109,7 @@ export default ({
     },
 
     async DELETE_IMAGE({ commit }, image) {
-      const result = await requests.deleteJson(`/api/v1/posts/${image.id}`);
+      const result = await requests.deleteJson(`/v1/posts/${image.id}`);
       if (result.success === true) {
         commit('DELETE_IMAGE', image);
         this.dispatch('GET_IMAGES');

@@ -5,7 +5,7 @@
             <v-card v-if="images !== null">
                 <v-carousel height="100vh" hide-delimiters show-arrows="hover" v-model="imageIndex">
                     <v-carousel-item v-for="(image, i) in images" :key="i">
-                        <v-img class="" :src="`/api/v1/posts/${image.id}/s3large`" :lazy-src="image.url">
+                        <v-img class="" :src="`/v1/posts/${image.id}/s3large`" :lazy-src="image.url">
                             <div class="d-flex justify-space-between mx-2 mt-2">
                                 <span class="text-h5">{{image.title}}</span>
                                 <span class="icon-image mt-1">

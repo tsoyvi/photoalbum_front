@@ -8,7 +8,7 @@
         <VCard class="mx-1 pa-3 mb-6">
           <v-container class="d-flex align-start mb-n9 mt-n4">
           <v-avatar size="x-large">
-            <v-img :src="`/api/v1/profile/s3avatar/`"></v-img>
+            <v-img :src="`/v1/profile/s3avatar/`"></v-img>
             <!-- <v-icon v-else icon="mdi-account-circle" color="info" style="font-size: 35pt;"></v-icon> -->
           </v-avatar>
 

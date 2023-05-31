@@ -28,7 +28,7 @@
           <v-img
             @click="openViewImageWindow(imagesInAlbumItems, index)"
             :class="{ 'on-hover': isHovering, 'selected-image': image.isSelected }"
-            :src="`/api/v1/posts/${image.id}/s3small`"
+            :src="`/v1/posts/${image.id}/s3small`"
             :lazy-src="'/images/bg_img_default_5.jpg'"
             cover
             height="100%"
@@ -65,7 +65,7 @@
             <v-col v-for="(subImageIndex, subIndex) in 2" :key="subIndex" cols="12"
               class="px-2">
               <v-img
-                :src="`/api/v1/posts/${image.id}/s3small`"
+                :src="`/v1/posts/${image.id}/s3small`"
                 :lazy-src="'images/bg_img_default_0.jpg'"
                 cover
                 height="100%"
