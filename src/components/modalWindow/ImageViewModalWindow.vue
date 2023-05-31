@@ -7,7 +7,7 @@
                     <v-carousel-item v-for="(image, i) in images" :key="i">
                         <v-img v-if="!isLoadImage"
                           height="100vh"
-                          :src="`/v1/posts/${image.id}/s3large?lastMod=${Date.now()}`"
+                          :src="`/api/v1/posts/${image.id}/s3large?lastMod=${Date.now()}`"
                           :lazy-src="image.url">
                             <div class="d-flex justify-space-between mx-2 mt-2">
                                 <span class="text-h5">{{image.title}}</span>

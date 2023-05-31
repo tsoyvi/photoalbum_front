@@ -42,7 +42,7 @@ export default ({
   mutations: {
     SET_ALBUMS(state, albums) {
       state.albums = albums.map((album) => {
-        if (album.image) return { ...album, image: `/v1/albums/${album.id}/s3cover` };
+        if (album.image) return { ...album, image: `/api/v1/albums/${album.id}/s3cover` };
         return { ...album };
       });
     },
@@ -55,7 +55,7 @@ export default ({
     UPDATE_ALBUM(state, editedAlbum) {
       const index = state.albums.findIndex((album) => album.id === editedAlbum.id);
       state.albums[index] = { ...state.albums[index], ...editedAlbum };
-      state.albums[index].image = `/v1/albums/${editedAlbum.id}/s3cover`;
+      state.albums[index].image = `/api/v1/albums/${editedAlbum.id}/s3cover`;
 
       fetch(editedAlbum.image, { cache: 'reload', mode: 'no-cors' });
       document.body.querySelectorAll(`img[src='${editedAlbum.image}']`)
@@ -72,7 +72,7 @@ export default ({
   actions: {
 
     async CREATE_ALBUM({ commit }, album) {
-      const result = await requests.uploadFile('/v1/albums', album);
+      const result = await requests.uploadFile('/api/v1/albums', album);
       if (result.success === true) {
         // console.log(result.data);
         commit('ADD_ALBUM', result.data);
@@ -85,7 +85,7 @@ export default ({
     },
 
     async GET_ALBUMS({ commit }) {
-      const result = await requests.getJson('/v1/albums');
+      const result = await requests.getJson('/api/v1/albums');
       if (result.success === true) {
         // console.log(result.data);
         commit('SET_ALBUMS', result.data.data);
@@ -97,7 +97,7 @@ export default ({
     },
 
     async UPDATE_ALBUM({ commit }, { formData, album }) {
-      const result = await requests.uploadFile(`/v1/albums/${album.id}`, formData);
+      const result = await requests.uploadFile(`/api/v1/albums/${album.id}`, formData);
       if (result.success === true) {
         // console.log(result.data);
         commit('UPDATE_ALBUM', album);
@@ -110,7 +110,7 @@ export default ({
     },
 
     async DELETE_ALBUMS({ commit }, album) {
-      const result = await requests.deleteJson(`/v1/albums/${album.id}`);
+      const result = await requests.deleteJson(`/api/v1/albums/${album.id}`);
       if (result.success === true) {
         // console.log(result.data);
         commit('DELETE_ALBUM', album);
@@ -124,7 +124,7 @@ export default ({
 
     async DOWNLOAD_ALBUM(nul, album) {
       axios({
-        url: `/v1/albums/${album.id}/download-zip`,
+        url: `/api/v1/albums/${album.id}/download-zip`,
         method: 'GET',
         responseType: 'blob',
       }).then((res) => {
