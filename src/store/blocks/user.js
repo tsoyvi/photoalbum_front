@@ -130,9 +130,7 @@ export default ({
     async UPDATE_USER_PROFILE({ commit }, user) {
       // const result = await requests.patchJson('/api/v1/profile', user);
       const result = await requests.uploadFile('/api/v1/profile', user);
-      console.log(user);
-      if (result) {
-        console.log(result);
+      if (result.success) {
         commit('SET_FORM_DATA_FILL', result.data);
         // this.dispatch('СНЕК_LOGIN');
         return true;
@@ -143,9 +141,7 @@ export default ({
 
     async UPLOAD_USER_AVATAR({ commit }, userImage) {
       const result = await requests.uploadFile('/api/v1/profile', userImage);
-      console.log(userImage);
-      if (result) {
-        // console.log(result);
+      if (result.success) {
         commit('SET_FORM_DATA_FILL', result.data);
         // this.dispatch('СНЕК_LOGIN');
         return true;
