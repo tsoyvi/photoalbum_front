@@ -1,4 +1,5 @@
 <template>
+  <notification-bar />
   <SideBar
     :albums = "albums"
     ref="SideBar"
@@ -11,11 +12,13 @@
 import { mapActions, mapGetters } from 'vuex';
 
 // Components
+import NotificationBar from '@/components/NotificationBar.vue';
 import SideBar from '../components/SideBar.vue';
 
 export default {
   name: 'GalleryPage',
   components: {
+    NotificationBar,
     SideBar,
   },
 
