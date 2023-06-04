@@ -112,6 +112,11 @@
     ref = "AddImageAlbum"
   />
 
+  <MoveImageAlbum
+    :moveSelectedImages = 'moveSelectedImages'
+    ref = "MoveImageAlbum"
+  />
+
   <ImageViewModalWindow
     ref="ImageViewModalWindow"
   ></ImageViewModalWindow>
@@ -162,6 +167,7 @@
       </v-btn>
       <v-btn
           variant="text"
+          @click="selectFolderSelectedImages()"
       ><v-icon icon="mdi-file-move-outline"></v-icon> &nbsp; переместить
       </v-btn>
 
@@ -175,6 +181,7 @@ import { mapGetters, mapActions } from 'vuex';
 import PageNotFound from '../PageNotFound.vue';
 import ButtonAddFluid from '../ButtonAddFluid.vue';
 import AddImageAlbum from './AddImageAlbum.vue';
+import MoveImageAlbum from './MoveImageAlbum.vue';
 import ImageViewModalWindow from '../modalWindow/ImageViewModalWindow.vue';
 import ImagesMixin from '../../mixins/imagesMixin';
 
@@ -186,6 +193,7 @@ export default {
     PageNotFound,
     ButtonAddFluid,
     AddImageAlbum,
+    MoveImageAlbum,
     ImageViewModalWindow,
   },
 
@@ -210,6 +218,7 @@ export default {
     isDragStarted: false,
     filesArray: [],
     filesLoaded: [],
+    isLoadingAddImages: false,
 
   }),
 
@@ -236,7 +245,6 @@ export default {
         const index = this.albums.findIndex((x) => x.id === this.selectedAlbumId);
         return this.albums[index];
       }
-      console.log('albums');
       this.GET_ALBUMS();
 
       return null;
@@ -251,10 +259,14 @@ export default {
   },
 
   methods: {
-    ...mapActions(['GET_IMAGES', 'GET_ALBUMS', 'DOWNLOAD_IMAGE', 'CREATE_IMAGE']),
+    ...mapActions(['GET_IMAGES', 'GET_IMAGES_IN_ALBUM', 'GET_ALBUMS', 'DOWNLOAD_IMAGE', 'CREATE_IMAGE']),
 
     addImage() {
       this.$refs.AddImageAlbum.openWindow(this.selectedAlbumId);
+    },
+
+    selectFolderSelectedImages() {
+      this.$refs.MoveImageAlbum.openWindow(this.albums);
     },
 
     colSize(index) {
@@ -338,10 +350,30 @@ export default {
       return false;
     },
 
+    scrollPageLoader() {
+      const { scrollHeight } = document.documentElement;
+      const { clientHeight } = document.documentElement;
+      const height = scrollHeight - clientHeight;
+
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+
+      console.log(height, scrollTop);
+      if (height < scrollTop + 100 && !this.isLoadingAddImages) {
+      // добавим больше данных
+        this.isLoadingAddImages = true;
+        console.log(this.selectedAlbum.id);
+        this.GET_IMAGES_IN_ALBUM({ albumId: this.selectedAlbum.id, page: 2 });
+      }
+    },
+
   },
 
   mounted() {
     this.GET_IMAGES();
+
+    window.addEventListener('scroll', () => {
+      this.scrollPageLoader();
+    });
   },
 
 };
