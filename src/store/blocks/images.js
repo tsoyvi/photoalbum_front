@@ -20,7 +20,7 @@ export default ({
       state.images = state.images.concat(images);
       /* console.log(state.images);
       state.images = images; */
-      console.log(state.images);
+      // console.log(state.images);
     },
 
     ADD_IMAGE(state, image) {
@@ -132,6 +132,21 @@ export default ({
       const result = await requests.deleteJson(`/api/v1/posts/${image.id}`);
       if (result.success === true) {
         commit('DELETE_IMAGE', image);
+        this.dispatch('GET_IMAGES');
+        return true;
+      }
+
+      this.dispatch('addError', result.error);
+      return false;
+    },
+
+    async MOVE_IMAGE(nul, { image, albumId }) {
+      const schema = {
+        album_id: albumId,
+      };
+      const result = await requests.postJson(`/api/v1/posts/${image.id}`, schema);
+      if (result.success === true) {
+        // commit('DELETE_IMAGE', image);
         this.dispatch('GET_IMAGES');
         return true;
       }

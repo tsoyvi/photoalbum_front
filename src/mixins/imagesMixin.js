@@ -2,7 +2,7 @@ import { mapActions } from 'vuex';
 
 export default {
   methods: {
-    ...mapActions(['DOWNLOAD_IMAGE', 'ROTATE_IMAGE', 'DELETE_IMAGE']),
+    ...mapActions(['DOWNLOAD_IMAGE', 'ROTATE_IMAGE', 'DELETE_IMAGE', 'MOVE_IMAGE']),
 
     downloadImage(image) {
       this.DOWNLOAD_IMAGE(image);
@@ -28,6 +28,15 @@ export default {
         // eslint-disable-next-line no-await-in-loop
         const result = await this.DELETE_IMAGE(selectedImages[i]);
         console.log(result);
+      }
+    },
+
+    async moveSelectedImages(albumId) {
+      const selectedImages = this.imagesInAlbumItems.filter((img) => img.isSelected === true);
+      // console.log(this.selectedImage());
+      for (let i = 0; i < selectedImages.length; i += 1) {
+        console.log(selectedImages[i], albumId);
+        this.MOVE_IMAGE({ image: selectedImages[i], albumId });
       }
     },
 

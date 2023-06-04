@@ -112,6 +112,11 @@
     ref = "AddImageAlbum"
   />
 
+  <MoveImageAlbum
+    :moveSelectedImages = 'moveSelectedImages'
+    ref = "MoveImageAlbum"
+  />
+
   <ImageViewModalWindow
     ref="ImageViewModalWindow"
   ></ImageViewModalWindow>
@@ -162,6 +167,7 @@
       </v-btn>
       <v-btn
           variant="text"
+          @click="selectFolderSelectedImages()"
       ><v-icon icon="mdi-file-move-outline"></v-icon> &nbsp; переместить
       </v-btn>
 
@@ -175,6 +181,7 @@ import { mapGetters, mapActions } from 'vuex';
 import PageNotFound from '../PageNotFound.vue';
 import ButtonAddFluid from '../ButtonAddFluid.vue';
 import AddImageAlbum from './AddImageAlbum.vue';
+import MoveImageAlbum from './MoveImageAlbum.vue';
 import ImageViewModalWindow from '../modalWindow/ImageViewModalWindow.vue';
 import ImagesMixin from '../../mixins/imagesMixin';
 
@@ -186,6 +193,7 @@ export default {
     PageNotFound,
     ButtonAddFluid,
     AddImageAlbum,
+    MoveImageAlbum,
     ImageViewModalWindow,
   },
 
@@ -255,6 +263,10 @@ export default {
 
     addImage() {
       this.$refs.AddImageAlbum.openWindow(this.selectedAlbumId);
+    },
+
+    selectFolderSelectedImages() {
+      this.$refs.MoveImageAlbum.openWindow(this.albums);
     },
 
     colSize(index) {
