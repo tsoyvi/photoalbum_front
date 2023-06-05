@@ -144,7 +144,7 @@ export default ({
       const schema = {
         album_id: albumId,
       };
-      const result = await requests.postJson(`/api/v1/posts/${image.id}`, schema);
+      const result = await requests.putJson(`/api/v1/posts/${image.id}`, schema);
       if (result.success === true) {
         // commit('DELETE_IMAGE', image);
         this.dispatch('GET_IMAGES');
