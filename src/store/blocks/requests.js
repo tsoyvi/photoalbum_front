@@ -62,6 +62,7 @@ export default {
   async putJson(url, pData) {
     try {
       const { data } = await axios.put(url, pData);
+      console.log(data);
       if (data) {
         return { success: true, data };
       }

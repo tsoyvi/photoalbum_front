@@ -46,8 +46,25 @@ export default ({
         .forEach((img) => img.src = urlImage);
     },
 
-    DELETE_IMAGE(state, image) {
-      state.images = state.images.filter((item) => item.id !== image.id);
+    MOVE_IMAGE(state, { img, albumId }) {
+      const index = state.images.findIndex((image) => image.id === img.id);
+      state.images[index].album_id = albumId;
+      // state.albums[index].image = `/api/v1/albums/${editedAlbum.id}/s3cover`;
+    },
+
+    DELETE_IMAGE(state, img) {
+      const index = state.images.findIndex((image) => image.id === img.id);
+      state.images[index].album_id = 0;
+    },
+
+    SHARE_IMAGE(state, { image, link }) {
+      const index = state.images.findIndex((img) => img.id === image.id);
+      state.images[index].share_link = link;
+    },
+
+    DELETE_SHARE_IMAGE(state, img) {
+      const index = state.images.findIndex((image) => image.id === img.id);
+      state.images[index].share_link = '';
     },
 
   },
@@ -69,9 +86,7 @@ export default ({
     async GET_IMAGES({ commit }) {
       const result = await requests.getJson('/api/v1/posts');
       if (result.success === true) {
-        console.log(result.data);
         commit('SET_IMAGES', result.data.data);
-
         return true;
       }
 
@@ -132,7 +147,7 @@ export default ({
       const result = await requests.deleteJson(`/api/v1/posts/${image.id}`);
       if (result.success === true) {
         commit('DELETE_IMAGE', image);
-        this.dispatch('GET_IMAGES');
+        // this.dispatch('GET_IMAGES');
         return true;
       }
 
@@ -140,17 +155,50 @@ export default ({
       return false;
     },
 
-    async MOVE_IMAGE(nul, { image, albumId }) {
+    async MOVE_IMAGE({ commit }, { image, albumId }) {
       const schema = {
         album_id: albumId,
       };
-      const result = await requests.putJson(`/api/v1/posts/${image.id}`, schema);
-      if (result.success === true) {
-        // commit('DELETE_IMAGE', image);
-        this.dispatch('GET_IMAGES');
+      const result = await axios.put(`/api/v1/posts/${image.id}`, schema);
+      if (result.status === 204) {
+        commit('MOVE_IMAGE', { img: image, albumId });
+        console.log(result.status);
         return true;
       }
+      this.dispatch('addError', result.error);
+      return false;
+    },
 
+    async SHARE_IMAGE({ commit }, image) {
+      /* const schema = {
+        size": "S",
+        "angle": 90,
+        "bgcolor": "#ffffff"
+      }; */
+      // /api/v1/posts/{post_id}/share
+      const result = await requests.postJson(`/api/v1/posts/${image.id}/share`);
+      if (result.success === true) {
+        // console.log(result.data);
+        commit('SHARE_IMAGE', { image, link: result.data.share_link });
+        return true;
+      }
+      this.dispatch('addError', result.error);
+      return false;
+    },
+
+    async DELETE_SHARE_IMAGE({ commit }, image) {
+      /* const schema = {
+        size": "S",
+        "angle": 90,
+        "bgcolor": "#ffffff"
+      }; */
+      // /api/v1/posts/{post_id}/share
+      const result = await requests.postJson(`/api/v1/posts/${image.id}/unshare`);
+      if (result.success === true) {
+        console.log(result);
+        commit('DELETE_SHARE_IMAGE', image);
+        return result.data.share_link;
+      }
       this.dispatch('addError', result.error);
       return false;
     },

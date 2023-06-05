@@ -58,27 +58,43 @@
 </template>
 
 <script>
-// import { mapActions /* mapGetters */ } from 'vuex';
+import { mapActions /* mapGetters */ } from 'vuex';
 
 export default {
-  props: ['moveSelectedImages'],
+  props: [],
 
   data: () => ({
     dialog: false,
     albums: {},
     loading: null,
     selectedAlbumToMoveId: null,
+    selectedImages: null,
   }),
 
   methods: {
-    // ...mapActions(['UPDATE_IMAGE']),
+    ...mapActions(['MOVE_IMAGE']),
 
-    openWindow(albums) {
+    openWindow(albums, selectedImages) {
       this.albums = albums;
+      this.selectedImages = selectedImages;
       this.dialog = true;
     },
     closeWindow() {
       this.dialog = false;
+    },
+
+    async moveSelectedImages(albumId) {
+      this.loading = true;
+
+      // console.log(this.selectedImage());
+      for (let i = 0; i < this.selectedImages.length; i += 1) {
+        // console.log(this.selectedImages[i], albumId);
+        this.selectedImages[i].isSelected = false;
+        // eslint-disable-next-line no-await-in-loop
+        await this.MOVE_IMAGE({ image: this.selectedImages[i], albumId });
+      }
+      this.loading = false;
+      this.closeWindow();
     },
   },
 
