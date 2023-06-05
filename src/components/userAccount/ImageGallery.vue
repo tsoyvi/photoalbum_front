@@ -113,15 +113,20 @@
   />
 
   <MoveImageAlbum
-    :moveSelectedImages = 'moveSelectedImages'
     ref = "MoveImageAlbum"
+  />
+
+  <ShareImageAlbum
+    ref = "ShareImageAlbum"
   />
 
   <ImageViewModalWindow
     ref="ImageViewModalWindow"
   ></ImageViewModalWindow>
 
-    <div class="loaderImages">
+    <div class="loaderImages"
+      @keydown="bar"
+      @click="closeLoaderImages()">
       <v-card width="400"
         v-for="(file, index) in filesArray"
         :key="index"
@@ -182,6 +187,7 @@ import PageNotFound from '../PageNotFound.vue';
 import ButtonAddFluid from '../ButtonAddFluid.vue';
 import AddImageAlbum from './AddImageAlbum.vue';
 import MoveImageAlbum from './MoveImageAlbum.vue';
+import ShareImageAlbum from './ShareImageAlbum.vue';
 import ImageViewModalWindow from '../modalWindow/ImageViewModalWindow.vue';
 import ImagesMixin from '../../mixins/imagesMixin';
 
@@ -195,6 +201,7 @@ export default {
     AddImageAlbum,
     MoveImageAlbum,
     ImageViewModalWindow,
+    ShareImageAlbum,
   },
 
   data: () => ({
@@ -211,7 +218,7 @@ export default {
       },
       {
         icon: 'mdi-link-variant',
-        action: 'null',
+        action: 'shareImage',
         title: 'Поделиться',
       },
     ],
@@ -266,7 +273,8 @@ export default {
     },
 
     selectFolderSelectedImages() {
-      this.$refs.MoveImageAlbum.openWindow(this.albums);
+      const selectedImages = this.imagesInAlbumItems.filter((img) => img.isSelected === true);
+      this.$refs.MoveImageAlbum.openWindow(this.albums, selectedImages);
     },
 
     colSize(index) {
@@ -294,6 +302,9 @@ export default {
       if (action === 'selectImage') {
         this.selectImage(image);
       }
+      if (action === 'shareImage') {
+        this.shareImage(image);
+      }
     },
 
     downloadImage(image) {
@@ -311,6 +322,11 @@ export default {
       // this.countSelectedImage(imagesArray);
     },
 
+    shareImage(image) {
+      console.log('fg');
+      this.$refs.ShareImageAlbum.openWindow(image);
+    },
+
     openViewImageWindow(image, index) {
       this.$refs.ImageViewModalWindow.openWindow(image, index);
     },
@@ -325,9 +341,15 @@ export default {
         const result = await this.addDropImages(this.filesArray[i]);
 
         this.filesArray[i].resultLoad = result;
-        // console.log(result);
         this.filesLoaded[i] = result;
       }
+
+      setTimeout(() => { this.resetFilesArray(); }, 5000);
+    },
+
+    resetFilesArray() {
+      this.filesArray = [];
+      this.filesLoaded = [];
     },
 
     getSrc(photo) {
@@ -350,6 +372,10 @@ export default {
       return false;
     },
 
+    closeLoaderImages() {
+
+    },
+
     scrollPageLoader() {
       const { scrollHeight } = document.documentElement;
       const { clientHeight } = document.documentElement;
@@ -357,7 +383,7 @@ export default {
 
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
 
-      console.log(height, scrollTop);
+      // console.log(height, scrollTop);
       if (height < scrollTop + 100 && !this.isLoadingAddImages) {
       // добавим больше данных
         this.isLoadingAddImages = true;

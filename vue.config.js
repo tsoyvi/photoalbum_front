@@ -30,6 +30,7 @@ module.exports = {
 
   devServer: {
     // proxy: 'http://localhost:9000',
-    proxy: 'http://dev-photoalbum.tigunov.com',
+    // proxy: 'http://dev-photoalbum.tigunov.com',
+    proxy: 'http://k8s-photoalbum.tigunov.com/',
   },
 };
